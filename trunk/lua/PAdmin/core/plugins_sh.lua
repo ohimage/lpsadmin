@@ -28,12 +28,59 @@ local function shInclude( path )
 	include( path )
 end
 
+<<<<<<< .mine
+/*========================
+Initial Plugin Loading
+========================*/
+
+local p = {}
+PAdmin.plugins = p
+
+function PAdmin:GetPlugins()
+	return PAdmin.plugins
+end
+function PAdmin:RegisterPlugin( name, tbl )
+	PAdmin.plugins[ name ] = tbl
+end
+
+-- include statements to make things easier.
+local function clInclude( path )
+	path = "PAdmin/plugins/"..path
+	if(CLIENT)then
+		include( path )
+	else
+		AddCSLuaFile( path )
+	end
+end
+local function svInclude( path )
+	path = "PAdmin/plugins/"..path
+	if(SERVER)then
+		include( path )
+	end
+end
+local function shInclude( path )
+	path = "PAdmin/plugins/"..path
+	if(SERVER)then
+		AddCSLuaFile( path )
+	end
+	include( path )
+end
+
+-- find the proper files
+local shfiles = file.Find( "PAdmin/plugins/*_sh.lua", "lsv" )
+local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
+local svfiles = nil
+PAdmin:LoadMsgLN()
+PAdmin:LoadMsg( "Loading Plugins: " )
+=======
 -- find the proper files
 local shfiles = file.Find( "PAdmin/plugins/*_sh.lua", "lsv" )
 local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
 local svfiles = nil
 PAdmin:LoadMsg( "Loading Plugins: " )
+>>>>>>> .r8
 if(SERVER)then
+<<<<<<< .mine
 	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
 	for k,v in pairs( svfiles )do
 		PAdmin:LoadMsg( "Plugin: "..v )
@@ -49,3 +96,58 @@ for k,v in pairs( clfiles )do
 	PAdmin:LoadMsg( "Plugin: "..v )
 	clInclude( v )
 end
+PAdmin:LoadMsgLN()
+
+/*==========================
+Other Plugin System Features
+==========================*/
+
+PAdmin:LoadMsg("Loading Plugin Hook System.")
+
+function PAdmin:CallPluginHook( name, ... )
+	name = "Hook_"..name
+	for k,v in pairs( p )do
+		if( v[name] )then
+			local succ, err = pcall( v[name], ... )
+			if( not succ )then -- error handler.
+				print("PAdmin: Plugin Hook Error on hook "..name.." plugin: "..k.."\n      Error: "..err )
+			end
+		end
+	end
+end
+local hooks = {}
+function PAdmin:RegisterPluginHook( name )
+	-- prevent double registering hooks
+	if( not table.HasValue( name ))then table.insert( hooks, name ) else return end
+	PAdmin:LoadMsg("Registered hook: PAdminPlug."..name)
+	-- add the actual hook
+	hook.Add( name, "PAdminPlug."..name, function( ... )
+		PAdmin:CallPluginHook( ... )
+	end)
+end
+
+-- register some useful hooks. Plugins can also register ones.
+PAdmin:RegisterPluginHook( "PlayerSpawn" )
+PAdmin:RegisterPluginHook( "PlayerInitialSpawn" )
+PAdmin:RegisterPluginHook( "PlayerSay" )
+PAdmin:RegisterPluginHook( "PostDrawOpaqueRenderables" )
+PAdmin:RegisterPluginHook( "HUDPaint" )
+PAdmin:RegisterPluginHook( "HUDPaintBackground" )
+PAdmin:RegisterPluginHook( "PlayerConnect" )
+PAdmin:RegisterPluginHook( "PlayerDeath" )
+PAdmin:RegisterPluginHook( "PlayerDeath" )=======
+	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
+	for k,v in pairs( svfiles )do
+		PAdmin:LoadMsg( "Plugin: "..v )
+		svInclude( v )
+	end
+end
+-- include the files.
+for k,v in pairs( shfiles )do
+	PAdmin:LoadMsg( "Plugin: "..v )
+	shInclude( v )
+end
+for k,v in pairs( clfiles )do
+	PAdmin:LoadMsg( "Plugin: "..v )
+	clInclude( v )
+end>>>>>>> .r8
