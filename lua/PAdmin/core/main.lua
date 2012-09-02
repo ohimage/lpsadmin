@@ -26,6 +26,37 @@ local function shInclude( path )
 	include( path )
 end
 
+<<<<<<< .mine
+if(CLIENT)then
+	concommand.Add("padmin_reload",function( ply )
+		if(ply:IsSuperAdmin())then
+			print("PAdmin: Reloading...")
+			net.Start( "PAdmin_ReloadSV" )
+			net.SendToServer( player.GetAll() )
+			include("autorun/PAdmin.lua")
+		else
+			print("Error: You must be a superadmin to do this.")
+		end
+	end)
+else
+	util.AddNetworkString( "PAdmin_ReloadSV" )
+	net.Receive( "PAdmin_ReloadSV", function( length, client )
+		if(client:IsSuperAdmin())then
+			include("autorun/padmin.lua")
+		else
+			client:Kick("PAdmin: Attempting to hack reload system.")
+		end
+	end );
+end
+function PAdmin:LoadMsg( msg )
+	local len = math.Max( 1, 80 - string.len( msg ) )
+	MsgN(string.format( "|| %s%"..len.."s ||", msg, "" ) )
+end
+function PAdmin:LoadMsgLN( )
+	MsgN( "||==================================================================================||" )
+end
+
+=======
 if(CLIENT)then
 	concommand.Add("padmin_reload",function( ply )
 		if(ply:IsSuperAdmin())then
@@ -51,6 +82,7 @@ function PAdmin:LoadMsg( msg )
 	print(string.format( "||%50s||", msg ) )
 end
 
+>>>>>>> .r8
 /*====================================
 Includes after this line
 ====================================*/
