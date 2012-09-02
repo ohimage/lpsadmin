@@ -28,7 +28,6 @@ local function shInclude( path )
 	include( path )
 end
 
-<<<<<<< .mine
 /*========================
 Initial Plugin Loading
 ========================*/
@@ -72,15 +71,7 @@ local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
 local svfiles = nil
 PAdmin:LoadMsgLN()
 PAdmin:LoadMsg( "Loading Plugins: " )
-=======
--- find the proper files
-local shfiles = file.Find( "PAdmin/plugins/*_sh.lua", "lsv" )
-local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
-local svfiles = nil
-PAdmin:LoadMsg( "Loading Plugins: " )
->>>>>>> .r8
 if(SERVER)then
-<<<<<<< .mine
 	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
 	for k,v in pairs( svfiles )do
 		PAdmin:LoadMsg( "Plugin: "..v )
@@ -142,12 +133,3 @@ PAdmin:RegisterPluginHook( "PlayerDeath" )=======
 		svInclude( v )
 	end
 end
--- include the files.
-for k,v in pairs( shfiles )do
-	PAdmin:LoadMsg( "Plugin: "..v )
-	shInclude( v )
-end
-for k,v in pairs( clfiles )do
-	PAdmin:LoadMsg( "Plugin: "..v )
-	clInclude( v )
-end>>>>>>> .r8
