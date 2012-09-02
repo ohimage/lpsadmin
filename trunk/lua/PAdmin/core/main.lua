@@ -5,7 +5,7 @@ URL: http://lastpenguin.com
 It may be reused so long as proper credits are given.
 */
 local function clInclude( path )
-	"PAdmin/"..path
+	path = "PAdmin/"..path
 	if(CLIENT)then
 		include( path )
 	else
@@ -13,7 +13,7 @@ local function clInclude( path )
 	end
 end
 local function svInclude( path )
-	"PAdmin/"..path
+	path = "PAdmin/"..path
 	if(SERVER)then
 		include( path )
 	end
@@ -24,6 +24,31 @@ local function shInclude( path )
 		AddCSLuaFile( path )
 	end
 	include( path )
+end
+
+if(CLIENT)then
+	concommand.Add("padmin_reload",function( ply )
+		if(ply:IsSuperAdmin())then
+			print("PAdmin: Reloading...")
+			net.Start( "PAdmin_ReloadSV" )
+			net.SendToServer( player.GetAll() )
+			include("autorun/PAdmin.lua")
+		else
+			print("Error: You must be a superadmin to do this.")
+		end
+	end)
+else
+	util.AddNetworkString( "PAdmin_ReloadSV" )
+	net.Receive( "PAdmin_ReloadSV", function( length, client )
+		if(client:IsSuperAdmin())then
+			include("autorun/padmin.lua")
+		else
+			client:Kick("PAdmin: Attempting to hack reload system.")
+		end
+	end );
+end
+function PAdmin:LoadMsg( msg )
+	print(string.format( "||%50s||", msg ) )
 end
 
 /*====================================
