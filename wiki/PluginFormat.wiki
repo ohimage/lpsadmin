@@ -25,12 +25,12 @@ PAdmin is constructed to provide many resources that plugins can use to make tas
 === Plugin Hooks ===
 PAdmin offers a set functions that are automatically called on plugins that act like hooks.
 The Functions are as follows:
-* Hook_PlayerSpawn
-* Hook_PlayerInitialSpawn
-* Hook_PlayerDeath
-* Hook_HUDPaint
-* Hook_HUDPaintBackground
-* Hook_PlayerSay - dont confuse this with the chat command system. It shouldnt be used for commands
-* Hook_PlayerConnect
+  * Hook_PlayerSpawn
+  * Hook_PlayerInitialSpawn
+  * Hook_PlayerDeath
+  * Hook_HUDPaint
+  * Hook_HUDPaintBackground
+  * Hook_PlayerSay - dont confuse this with the chat command system. It shouldnt be used for commands
+  * Hook_PlayerConnect
 Thease are used as follows:
 Ex: pluginTable.Hook_PlayerSpawn = function( ply ) end
