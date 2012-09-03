@@ -40,6 +40,7 @@ function PAdmin:GetPlugins()
 end
 function PAdmin:RegisterPlugin( name, tbl )
 	PAdmin.plugins[ name ] = tbl
+	PAdmin:LoadMsg("Registered Plugin: "..name )
 end
 
 -- include statements to make things easier.
@@ -71,6 +72,7 @@ local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
 local svfiles = nil
 PAdmin:LoadMsgLN()
 PAdmin:LoadMsg( "Loading Plugins: " )
+PAdmin:LoadMsgLN()
 if(SERVER)then
 	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
 	for k,v in pairs( svfiles )do
@@ -87,13 +89,13 @@ for k,v in pairs( clfiles )do
 	PAdmin:LoadMsg( "Plugin: "..v )
 	clInclude( v )
 end
-PAdmin:LoadMsgLN()
 
 /*==========================
 Other Plugin System Features
 ==========================*/
-
-PAdmin:LoadMsg("Loading Plugin Hook System.")
+PAdmin:LoadMsgLN()
+PAdmin:LoadMsg("Loading Plugin Hook System:")
+PAdmin:LoadMsgLN()
 
 function PAdmin:CallPluginHook( name, ... )
 	name = "Hook_"..name
@@ -109,11 +111,11 @@ end
 local hooks = {}
 function PAdmin:RegisterPluginHook( name )
 	-- prevent double registering hooks
-	if( not table.HasValue( name ))then table.insert( hooks, name ) else return end
+	if( not table.HasValue( hooks, name ))then table.insert( hooks, name ) else return end
 	PAdmin:LoadMsg("Registered hook: PAdminPlug."..name)
 	-- add the actual hook
 	hook.Add( name, "PAdminPlug."..name, function( ... )
-		PAdmin:CallPluginHook( ... )
+		PAdmin:CallPluginHook( name, ... )
 	end)
 end
 
@@ -126,10 +128,14 @@ PAdmin:RegisterPluginHook( "HUDPaint" )
 PAdmin:RegisterPluginHook( "HUDPaintBackground" )
 PAdmin:RegisterPluginHook( "PlayerConnect" )
 PAdmin:RegisterPluginHook( "PlayerDeath" )
-PAdmin:RegisterPluginHook( "PlayerDeath" )=======
-	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
-	for k,v in pairs( svfiles )do
-		PAdmin:LoadMsg( "Plugin: "..v )
-		svInclude( v )
+PAdmin:RegisterPluginHook( "PlayerDeath" )
+
+
+PAdmin:LoadMsgLN()
+for k,v in pairs( p )do
+	print("Checking plugin "..k)
+	if( p.Init )then
+		print("Calling init on "..k)
+		p:Init()
 	end
 end

@@ -1,8 +1,8 @@
 /*
-LPS Admin mod by TheLastPenguin and Trip
-This admin mod is created for the needs and use of ||LPS|| Servers
-URL: http://lastpenguin.com
-It may be reused so long as proper credits are given.
+	LPS Admin mod by TheLastPenguin and Trip
+	This admin mod is created for the needs and use of ||LPS|| Servers
+	URL: http://lastpenguin.com
+	It may be reused so long as proper credits are given.
 */
 local function clInclude( path )
 	path = "PAdmin/"..path
@@ -58,7 +58,11 @@ end
 /*====================================
 Includes after this line
 ====================================*/
--- Libraries First:
 
+-- Libraries First:
+shInclude("lib/data_sh.lua") -- data library.
+shInclude("lib/string_sh.lua") -- data library.
+-- Inbetween stuff:
+svInclude( "core/permissions_sv.lua" )
 -- Things with Dependencies Last
 shInclude("core/plugins_sh.lua")
