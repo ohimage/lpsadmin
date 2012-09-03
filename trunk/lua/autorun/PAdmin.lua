@@ -15,4 +15,4 @@ else
 	chat.AddText(Color(50,50,50),string.format("Loaded LPS Admin mod Version %s.",PAdmin.Version))
 end
 
-include("lua/PAdmin/core/main.lua")
+include("PAdmin/core/main.lua")
