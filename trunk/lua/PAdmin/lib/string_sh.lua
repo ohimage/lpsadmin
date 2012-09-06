@@ -19,5 +19,7 @@ function PAdmin:TimeToMinutes(  str )
 			cur = ""
 		else
 			cur = cur..str[i]
+		end
+	end
 end
 PAdmin:TimeToSeconds( "1w2d" )

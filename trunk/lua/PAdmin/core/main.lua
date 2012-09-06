@@ -39,13 +39,17 @@ if(CLIENT)then
 	end)
 else
 	util.AddNetworkString( "PAdmin_ReloadSV" )
-	net.Receive( "PAdmin_ReloadSV", function( length, client )
+	local function reload( cl )
 		if(client:IsSuperAdmin())then
 			include("autorun/padmin.lua")
 		else
 			client:Kick("PAdmin: Attempting to hack reload system.")
 		end
+	end
+	net.Receive( "PAdmin_ReloadSV", function( length, client )
+		reload( client )
 	end );
+	concommand.Add("PAdmin_reloadSV", reload )
 end
 function PAdmin:LoadMsg( msg )
 	local len = math.Max( 1, 80 - string.len( msg ) )
