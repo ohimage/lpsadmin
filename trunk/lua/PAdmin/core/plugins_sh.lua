@@ -134,8 +134,8 @@ PAdmin:RegisterPluginHook( "PlayerDeath" )
 PAdmin:LoadMsgLN()
 for k,v in pairs( p )do
 	print("Checking plugin "..k)
-	if( p.Init )then
+	if( v.Init )then
 		print("Calling init on "..k)
-		p:Init()
+		v:Init()
 	end
 end
