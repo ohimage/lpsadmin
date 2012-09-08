@@ -128,14 +128,13 @@ PAdmin:RegisterPluginHook( "HUDPaint" )
 PAdmin:RegisterPluginHook( "HUDPaintBackground" )
 PAdmin:RegisterPluginHook( "PlayerConnect" )
 PAdmin:RegisterPluginHook( "PlayerDeath" )
-PAdmin:RegisterPluginHook( "PlayerDeath" )
 
 
 PAdmin:LoadMsgLN()
 for k,v in pairs( p )do
 	print("Checking plugin "..k)
-	if( v.Init )then
+	if( p.Init )then
 		print("Calling init on "..k)
-		v:Init()
+		p:Init()
 	end
 end
