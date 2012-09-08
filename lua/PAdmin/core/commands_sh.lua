@@ -1,14 +1,20 @@
-PAdmin.types = {}
-PAdmin.types.STEAMID = 1
-PAdmin.types.STR = 2
-PAdmin.types.PLY = 3
-PAdmin.types.INT = 4
-PAdmin.types.TIME = 4
-local argTypeChecks = {}
-argTypeChecks[ PAdmin.types.STEAMID ] = function( arg )
-	return string.match( arg, "STEAM_[0-5]:[0-9]:[0-9]+" )
-end
 
-local function checkType( typeID, arg )
-	
-end
+
+
+/*=========================
+Command Parsing and Running
+=========================*/
+local cmdPrefix = '!'
+hook.Add("PlayerSay", "PAdmin.c.ChatCmdHook", function( ply, text )
+	print("Checking what player said")
+	if( text[1] == cmdPrefix )then
+		text = string.sub( text, 2 )
+		print("Text without ! mark is: ".. text )
+		local args = string.Explode( " ", text )
+		local cmd = args[1]
+		table.remove( args, 1 )
+		PrintTable( args )
+	else
+		
+	end
+end)

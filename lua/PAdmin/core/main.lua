@@ -40,10 +40,10 @@ if(CLIENT)then
 else
 	util.AddNetworkString( "PAdmin_ReloadSV" )
 	local function reload( cl )
-		if(client:IsSuperAdmin())then
+		if(cl:IsSuperAdmin())then
 			include("autorun/padmin.lua")
 		else
-			client:Kick("PAdmin: Attempting to hack reload system.")
+			cl:Kick("PAdmin: Attempting to hack reload system.")
 		end
 	end
 	net.Receive( "PAdmin_ReloadSV", function( length, client )
@@ -68,5 +68,6 @@ shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- data library.
 -- Inbetween stuff:
 svInclude( "core/permissions_sv.lua" )
+svInclude( "core/commands_sh.lua" )
 -- Things with Dependencies Last
 shInclude("core/plugins_sh.lua")
