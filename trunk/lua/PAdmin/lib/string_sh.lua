@@ -120,6 +120,11 @@ end
 
 function PAdmin:FormatPlayerTable( tbl )
 	res = {}
+	if( #tbl == 1 )then
+		table.insert( res, "player ")
+	else
+		table.insert( res, "players ")
+	end
 	for k,v in pairs( tbl )do
 		table.insert( res, v )
 		table.insert( res, ", " )

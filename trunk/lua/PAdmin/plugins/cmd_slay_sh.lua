@@ -9,6 +9,6 @@ tbl.run = function( ply, args )
 	for k,v in pairs( res )do
 		v:Kill()
 	end
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.white, ply, " slayed players ", unpack( PAdmin:FormatPlayerTable( res ) ) )
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " slayed ", unpack( PAdmin:FormatPlayerTable( res ) ) )
 end
 PAdmin:RegisterCommand( "slay" , tbl )
