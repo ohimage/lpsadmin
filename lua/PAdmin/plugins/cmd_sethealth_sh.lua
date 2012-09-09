@@ -10,6 +10,6 @@ tbl.run = function( ply, args )
 	for k,v in pairs( res )do
 		v:SetHealth( tonumber( args[2] ) )
 	end
-	PAdmin:Notify( player.GetAll(), PAdmin.colors.white, ply, " set health for players ", PAdmin:FormatPlayerTable( res ) , " to ", args[2] )
+	PAdmin:Notify( player.GetAll(), PAdmin.colors.neutral, ply, " set health for ", PAdmin:FormatPlayerTable( res ) , " to ", args[2] )
 end
 PAdmin:RegisterCommand( "hp" , tbl )
