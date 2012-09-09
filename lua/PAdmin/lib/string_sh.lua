@@ -30,7 +30,7 @@ PAdmin.types = {}
 PAdmin.types.STEAMID = 1
 PAdmin.types.STRING = 2
 PAdmin.types.PLY = 3
-PAdmin.types.INT = 4
+PAdmin.types.NUMBER = 4
 PAdmin.types.TIME = 5
 local argTypeChecks = {}
 argTypeChecks[ PAdmin.types.STEAMID ] = function( arg )
@@ -49,22 +49,33 @@ argTypeChecks[ PAdmin.types.STRING ] = function( arg )
 	end
 end
 argTypeChecks[ PAdmin.types.PLY ] = function( arg )
-	for k,v in pairs( player.GetAll())do
-		if( string.find( v:Nick(), arg ) )then
+	if( arg == '*')then	
+		return true
+	end
+	for k,v in pairs( player.GetAll())do 
+		print("Checking ply "..v:Nick().." with "..arg)
+		if( string.find( string.lower( v:Nick() ), string.lower( arg ) ) )then
+			print("Its a match!")
+			return true
+		end
+	end
+	for k,v in pairs( player.GetAll())do 
+		if( arg == v:SteamID() )then
+			print("Its a match!")
 			return true
 		end
 	end
 	return false
 end
-argTypeChecks[ PAdmin.types.INT ] = function( arg )
-	if( type( arg ) == "number" )then
+argTypeChecks[ PAdmin.types.NUMBER ] = function( arg )
+	if( string.match( arg, "[0-9.]+") == arg )then
 		return true
 	else
 		return false
 	end
 end
 argTypeChecks[ PAdmin.types.TIME ] = function( arg )
-	local res = string.match( arg , "[0-9wdhm]*" )
+	local res = string.match( arg , "[0-9wdhm]+" )
 	if( res == arg )then
 		return true
 	else
@@ -80,4 +91,44 @@ function PAdmin:CheckType( arg, TypeID )
 		ErrorNoHalt( "PAdmin: Invalid Arg Type check requested.")
 		return false
 	end
+end
+
+-- find player by Name:
+function PAdmin:FindPlayersByName( name )
+	if( name == '*' )then return player.GetAll() end
+	local tbl = {}
+	for k,v in pairs(player.GetAll())do
+		if( string.find( string.lower( v:Nick() ), string.lower( name ) ))then
+			table.insert( tbl, v )
+		end
+	end
+	return tbl
+end
+-- this finds a single player, and returns nil if none are found, or if more than one match is found.
+function PAdmin:FindPlayerByName( name )
+	local res = PAdmin:FindPlayersByName( name )
+	if( #res > 0)then
+		if( #res == 1 )then
+			return res[1]
+		else
+			return nil, "More Specific."
+		end
+	else
+		return nil, "No Results."
+	end
+end
+
+function PAdmin:FormatPlayerTable( tbl )
+	res = {}
+	for k,v in pairs( tbl )do
+		table.insert( res, v )
+		table.insert( res, ", " )
+	end
+	table.remove( res, #res )
+	if( #res == 1 )then
+		table.insert( res, " (1 Player)")
+	else
+		table.insert( res, string.format(" (%d Players)", #tbl ) )
+	end
+	return res
 end

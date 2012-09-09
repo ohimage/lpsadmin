@@ -64,10 +64,12 @@ Includes after this line
 ====================================*/
 
 -- Libraries First:
+shInclude( "config.lua" )
 shInclude("lib/data_sh.lua") -- data library.
-shInclude("lib/string_sh.lua") -- data library.
+shInclude("lib/string_sh.lua") -- string library.
+shInclude("lib/genaric_sh.lua") -- genaric stuff library.
 -- Inbetween stuff:
 svInclude( "core/permissions_sv.lua" )
-svInclude( "core/commands_sh.lua" )
+shInclude( "core/commands_sh.lua" )
 -- Things with Dependencies Last
 shInclude("core/plugins_sh.lua")
