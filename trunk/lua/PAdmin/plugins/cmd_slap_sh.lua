@@ -8,8 +8,10 @@ tbl.permdefault = true
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	for k,v in pairs( res )do
+		local soundvar = math.Round(math.Rand(1, 6))
 		v:TakeDamage( tonumber( args[2] ), ply, ply)
 		v:SetVelocity( Vector( math.random( -200, 200 ), math.random( -200, 200 ), math.random( 100, 600 ) )) 
+		v:EmitSound( "physics/body/body_medium_impact_hard"..soundvar..".wav", 100, 100 )
 	end
 	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " slapped ", PAdmin:FormatPlayerTable( res ), " with ", args[2] , " damage." )
 end
