@@ -10,10 +10,15 @@ tbl.permdefault = true
 local whiplist = {}
 local function whip( ply, dmg )
 	for k,v in pairs( whiplist )do
+		local soundvar = math.Round(math.Rand(1, 6))
 		if( not ( v[2] == 0 ))then
 			v[2] = v[2] - 1
 			k:TakeDamage( v[1], nil, nil)
-			k:SetVelocity(Vector( math.random( -200, 200 ), math.random( -200, 200 ), math.random( -600, 600 ) ))
+			k:SetVelocity(Vector( math.random( -200, 200 ), math.random( -200, 200 ), math.random( 100, 600 ) ))
+			k:EmitSound( "physics/body/body_medium_impact_hard"..soundvar..".wav", 100, 100 )
+			if not k:Alive() then
+				whiplist[ k ] = nil
+			end
 		else
 			whiplist[ k ] = nil
 		end
