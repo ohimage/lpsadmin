@@ -3,7 +3,7 @@ tbl.format = {
 	{PAdmin.types.PLY, "target<ply>" },
 	{PAdmin.types.NUMBER, "HP<num>" }
 }
-tbl.perm = "PAdmin.slay"
+tbl.perm = "PAdmin.hp"
 tbl.permdefault = true
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
