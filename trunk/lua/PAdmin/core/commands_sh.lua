@@ -48,18 +48,21 @@ if(SERVER)then
 					break
 				end
 			end
-			cmd.run(ply, args )
+			local status, errmsg = pcall( cmd.run, ply, args )
+			if( not status and errmsg )then
+				print(string.format( "PAdmin: Plugin.run failed on command %s. Error Dump: ", cmd))
+				PrintTable( args )
+				ErrorNoHalt( errmsg )
+			end
 		else
 			PAdmin:Notice( ply, PAdmin.colors.error, string.format("Command %s not found!", cmd ) )
 		end
 	end
 	
 	hook.Add("PlayerSay", "PAdmin.c.ChatCmdHook", function( ply, text )
-		print("Checking what player said")
 		if( text[1] == cmdPrefix )then
 			text = string.sub( text, 2 )
-			print("Text without ! mark is: ".. text )
-			local args = string.Explode( " ", text )
+			local args = PAdmin:ParseCommandString( text )
 			parse( ply, args )
 			return ""
 		end
