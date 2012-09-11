@@ -120,6 +120,10 @@ end
 
 function PAdmin:FormatPlayerTable( tbl )
 	res = {}
+	-- check if its everyone.
+	if( #tbl == #player.GetAll())then
+		return {PAdmin.colors.cyan, "Everyone"}
+	end
 	if( #tbl == 1 )then
 		table.insert( res, "player ")
 	else
@@ -134,6 +138,33 @@ function PAdmin:FormatPlayerTable( tbl )
 		table.insert( res, " (1 Player)")
 	else
 		table.insert( res, string.format(" (%d Players)", #tbl ) )
+	end
+	return res
+end
+
+function PAdmin:ParseCommandString( str )
+	local res = {}
+	local args = string.Explode( ' ', str )
+	local buff = nil
+	
+	local quotes = false
+	for k,v in ipairs( args )do
+		if( quotes )then
+			buff = buff .. v
+			if( v[string.len( v )] == '"' )then
+				quotes = false
+				local carg = string.gsub(v, '"', '' )
+				table.insert( res, carg)
+			end
+		else
+			if( v[1] == '"' and not( v[string.len( v )] == '"' ))then
+				quotes = true
+				buff = v
+			else
+				local carg = string.gsub( v, '"', '')
+				table.insert( res, carg )
+			end
+		end
 	end
 	return res
 end
