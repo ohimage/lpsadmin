@@ -17,10 +17,8 @@ unfreeze.permdefault = true
 freeze.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	for k, v in pairs( res ) do
-		if v:IsValid() then
-			v:Freeze( true )
-			v:SetColor( Color(0, 100, 255) )
-		end
+		v:Freeze( true )
+		v:SetColor( Color(0, 100, 255) )
 	end
 	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.good, " froze ", PAdmin.colors.neutral, PAdmin:FormatPlayerTable( res ), "." )
 end
@@ -28,10 +26,8 @@ end
 unfreeze.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	for k, v in pairs( res ) do
-		if v:IsValid() then
-			v:Freeze( false )
-			v:SetColor( Color(255, 255, 255) )
-		end
+		v:Freeze( false )
+		v:SetColor( Color(255, 255, 255) )
 	end
 	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.error, " unfroze ", PAdmin.colors.neutral, PAdmin:FormatPlayerTable( res ), "." )
 end
