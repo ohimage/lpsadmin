@@ -4,7 +4,7 @@ tbl.format = {
 	{PAdmin.types.NUMBER, "damage<num>" },
 	{PAdmin.types.NUMBER, "times<num>" }
 }
-tbl.perm = "PAdmin.whip"
+tbl.perm = "whip"
 tbl.permdefault = true
 
 local whiplist = {}
@@ -14,7 +14,7 @@ local function whip( ply, dmg )
 		if( not ( v[2] == 0 ))then
 			v[2] = v[2] - 1
 			k:TakeDamage( v[1], nil, nil)
-			k:SetVelocity(Vector( math.random( -200, 200 ), math.random( -200, 200 ), math.random( 100, 600 ) ))
+			k:SetVelocity(Vector( math.random( -400, 400 ), math.random( -400, 400 ), math.random( -100, 400 ) ))
 			k:EmitSound( "physics/body/body_medium_impact_hard"..soundvar..".wav", 100, 100 )
 			if not k:Alive() then
 				whiplist[ k ] = nil

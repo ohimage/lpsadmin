@@ -59,6 +59,13 @@ function PAdmin:LoadMsgLN( )
 	MsgN( "||==================================================================================||" )
 end
 
+timer.Simple( 1, function()
+	for k,v in pairs(player.GetAll())do
+		hook.Call("PlayerSpawn",GM, v)
+		hook.Call("PlayerInitialSpawn",GM, v)
+	end
+end)
+
 /*====================================
 Includes after this line
 ====================================*/
