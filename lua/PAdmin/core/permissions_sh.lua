@@ -47,7 +47,9 @@ end
 function Group_MT:GetTitle( str )
 	return self._title or "none"
 end
-
+function Group_MT:GetID()
+	return self._id
+end
 function Group_MT:SetImmunity( level )
 	self._immunity = level
 end
@@ -79,13 +81,7 @@ function Group_MT.__le( op1, op2 ) -- <= operation
 	return op1._immunity <= op2._immunity
 end
 function Group_MT.__tostring( self )
-	local tbl = {"Group:"}
-	for k,v in pairs( self )do
-		if( type( v ) == "string" or type( v ) == "number" )then
-			table.insert(tbl, k.." -- "..v )
-		end
-	end
-	return table.concat( tbl, "\n")
+	return util.TableToKeyValues( self )
 end
 function Group_MT:ToTable()
 	local tbl = {}
@@ -146,14 +142,28 @@ function PAdmin:LoadGroups( )
 end
 PAdmin:LoadGroups()
 
-for k,v in pairs( player.GetAll())do
-	if( v:IsListenServerHost( ) )then
-		v:SetNWInt("PAdmin.GroupID", 2 )
+function PAdmin:SaveGroups( )
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Saveing Groups.")
+	PAdmin:LoadMsgLN()
+	local save = {}
+	for k,v in pairs( groups )do
+		PAdmin:LoadMsg("Saving "..( v:GetTitle() or v:GetID() ))
+		table.insert( save, v:ToTable() )
 	end
+	PAdmin:WriteFile("PAdmin/groups/custom.txt")
+	PAdmin:LoadMsgLN()
 end
+
+hook.Add("PlayerInitialSpawn","PAdmin.Perms.SettupUser",function( ply )
+	if( ply:IsListenServerHost( ) )then
+		ply:SetNWInt("PAdmin.GroupID", 2 )
+		ply:SetNWString("UserGroup", PAdmin:GetGroupByID( 2 ):GetTitle() )
+	end
+end)
 
 local ply = FindMetaTable( "Player" )
 function ply:HasPermission( perm ) -- checking permissions.
-	local g = PAdmin:GetGroupByID( ply:GetNWInt("PAdmin.GroupID") or 1 )
-	return g:HasPermission( perm )
+	local g = PAdmin:GetGroupByID( self:GetNWInt("PAdmin.GroupID", 1 ) )
+	return g:HasPermission( perm ) or g:HasPermission( '*' )
 end

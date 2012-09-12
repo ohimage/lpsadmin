@@ -31,7 +31,7 @@ if(SERVER)then
 	local function parse( ply, args )
 		local cmd = args[1]
 		table.remove( args, 1 )
-		if( commands[ cmd ] )then -- check its a valid command
+		if( commands[ cmd ] and args)then -- check its a valid command
 			print( string.format("Command %s was found!",cmd ) )
 			local cmd = commands[ cmd ]
 			if( not ply:HasPermission( cmd.perm ) )then
@@ -39,8 +39,21 @@ if(SERVER)then
 				return
 			end
 			if( not ( #args >= #(cmd.format)))then
-				PAdmin:Notice( ply, PAdmin.colors.error, "Not enough arguements! Expected "..tostring( #(cmd.format) ))
-				return
+				PAdmin:Notice( ply, PAdmin.colors.error, "Not enough arguements! Expected "..tostring( #(cmd.format) )," got " .. #args)
+				local msg = {}
+				table.insert( msg, PAdmin.colors.error )
+				table.insert( msg, "Expected: ")
+				table.insert( msg, PAdmin.colors.neutral )
+				for k,v in pairs(cmd.format)do
+					table.insert( msg, v[2])
+					table.insert( msg, ", ")
+					if( k == #args )then
+						table.insert( msg, PAdmin.colors.error )
+					end
+				end
+				table.remove( msg, #msg )
+				PAdmin:Notice( ply, msg )
+				return 
 			end
 			for k,v in ipairs( args )do
 				if( cmd.format[ k ] )then

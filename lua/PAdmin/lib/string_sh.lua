@@ -94,12 +94,16 @@ function PAdmin:CheckType( arg, TypeID )
 end
 
 -- find player by Name:
-function PAdmin:FindPlayersByName( name )
+-- ply is the caller and will be excluded.
+function PAdmin:FindPlayersByName( name , ply )
+	if( not name )then return {} end
 	if( name == '*' )then return player.GetAll() end
 	local tbl = {}
 	for k,v in pairs(player.GetAll())do
 		if( string.find( string.lower( v:Nick() ), string.lower( name ) ))then
-			table.insert( tbl, v )
+			if( not ply or v ~= ply )then
+				table.insert( tbl, v )
+			end
 		end
 	end
 	return tbl
