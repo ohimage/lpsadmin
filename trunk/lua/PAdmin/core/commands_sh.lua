@@ -34,6 +34,10 @@ if(SERVER)then
 		if( commands[ cmd ] )then -- check its a valid command
 			print( string.format("Command %s was found!",cmd ) )
 			local cmd = commands[ cmd ]
+			if( not ply:HasPermission( cmd.perm ) )then
+				PAdmin:Notice( ply, PAdmin.colors.error, string.format("You dont have permission %s.", cmd.perm ))
+				return
+			end
 			if( not ( #args >= #(cmd.format)))then
 				PAdmin:Notice( ply, PAdmin.colors.error, "Not enough arguements! Expected "..tostring( #(cmd.format) ))
 				return
