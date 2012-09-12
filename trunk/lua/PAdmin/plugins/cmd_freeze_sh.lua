@@ -1,41 +1,40 @@
-local tbl = {}
-local p = {}
+local freeze = {}
+local unfreeze = {}
 
-function p:Init()
-	PAdmin:RegisterPluginHook( "SetupMove" )
-	PAdmin:RegisterPluginHook( "FinishMove" )
-	PAdmin:RegisterPluginHook( "Move" )
-end
-
-
-tbl.format = {
+freeze.format = {
+	{PAdmin.types.PLY, "target<ply>"}
+}
+unfreeze.format = {
 	{PAdmin.types.PLY, "target<ply>"}
 }
 
-tbl.perm = "PAdmin.freeze"
-tbl.permdefault = true
+freeze.perm = "PAdmin.freeze"
+freeze.permdefault = true
 
-tbl.run = function( ply, args )
-	if args[1] then
-		local list = PAdmin:FindPlayersByName( args[1] )
-		for k, v in pairs( list ) do
-			if v:IsValid() then
-				if v.frozen then
-					if v.frozen == true then
-						v:Freeze(false)
-						v.frozen = false
-					else
-						v:Freeze(true)
-						v.frozen = true
-					end
-				else
-					v:Freeze(true)
-					v.frozen = true
-				end
-			end
+unfreeze.perm = "PAdmin.unfreeze"
+unfreeze.permdefault = true
+
+freeze.run = function( ply, args )
+	local res = PAdmin:FindPlayersByName( args[1] )
+	for k, v in pairs( res ) do
+		if v:IsValid() then
+			v:Freeze( true )
+			v:SetColor( Color(0, 100, 255) )
 		end
 	end
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.good, " froze ", PAdmin.colors.neutral, PAdmin:FormatPlayerTable( res ), "." )
 end
 
-PAdmin:RegisterPlugin( "freeze", p )
-PAdmin:RegisterCommand( "freeze", tbl )
+unfreeze.run = function( ply, args )
+	local res = PAdmin:FindPlayersByName( args[1] )
+	for k, v in pairs( res ) do
+		if v:IsValid() then
+			v:Freeze( false )
+			v:SetColor( Color(255, 255, 255) )
+		end
+	end
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.error, " unfroze ", PAdmin.colors.neutral, PAdmin:FormatPlayerTable( res ), "." )
+end
+
+PAdmin:RegisterCommand( "freeze", freeze )
+PAdmin:RegisterCommand( "unfreeze", unfreeze )
