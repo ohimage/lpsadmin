@@ -17,3 +17,20 @@ colors["neutral"] = Color( 255, 255, 255, 255 )
 colors["error"] = colors["red"]
 colors["warning"] = colors["yellow"]
 colors["good"] = colors["green"]
+
+local schemes = {}
+function PAdmin:AddScheme( name, tbl )
+	schemes[ name ] = tbl
+end
+
+function PAdmin:GetScheme( name )
+	return schemes[ name ]
+end
+
+PAdmin:AddScheme( "Default",
+{
+	["lightgray"] = Color( 180,191,190, 255 ),
+	["gray"] = Color( 98,115,108, 255 ),
+	["darkbrown"] = Color( 64,60,44, 255 ),
+	["brown"] = Color( 166,151,124, 255 )
+})

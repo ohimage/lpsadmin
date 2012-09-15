@@ -53,15 +53,12 @@ argTypeChecks[ PAdmin.types.PLY ] = function( arg )
 		return true
 	end
 	for k,v in pairs( player.GetAll())do 
-		print("Checking ply "..v:Nick().." with "..arg)
 		if( string.find( string.lower( v:Nick() ), string.lower( arg ) ) )then
-			print("Its a match!")
 			return true
 		end
 	end
 	for k,v in pairs( player.GetAll())do 
 		if( arg == v:SteamID() )then
-			print("Its a match!")
 			return true
 		end
 	end
@@ -92,7 +89,6 @@ function PAdmin:CheckType( arg, TypeID )
 		return false
 	end
 end
-
 -- find player by Name:
 -- ply is the caller and will be excluded.
 function PAdmin:FindPlayersByName( name , ply )
@@ -100,7 +96,7 @@ function PAdmin:FindPlayersByName( name , ply )
 	if( name == '*' )then return player.GetAll() end
 	local tbl = {}
 	for k,v in pairs(player.GetAll())do
-		if( string.find( string.lower( v:Nick() ), string.lower( name ) ))then
+		if( string.find( string.lower( v:Nick() ), string.lower( name ) ) or name == v:SteamID())then
 			if( not ply or v ~= ply )then
 				table.insert( tbl, v )
 			end
@@ -146,29 +142,38 @@ function PAdmin:FormatPlayerTable( tbl )
 	return res
 end
 
-function PAdmin:ParseCommandString( str )
-	local res = {}
-	local args = string.Explode( ' ', str )
-	local buff = nil
-	
-	local quotes = false
-	for k,v in ipairs( args )do
-		if( quotes )then
-			buff = buff .. v
-			if( v[string.len( v )] == '"' )then
-				quotes = false
-				local carg = string.gsub(v, '"', '' )
-				table.insert( res, carg)
+local function GetNextArg( args, i )
+	local cur = {}
+	if( args[i][1] == '"' )then
+		while( true )do
+			if( not args[i] )then
+				print("ran out of args to look at!!!!")
+				break
 			end
-		else
-			if( v[1] == '"' and not( v[string.len( v )] == '"' ))then
-				quotes = true
-				buff = v
-			else
-				local carg = string.gsub( v, '"', '')
-				table.insert( res, carg )
+			table.insert( cur, args[ i ] )
+			if( args[i][ string.len( args[i] ) ] == '"' )then
+				break
 			end
+			i = i + 1
 		end
+	else
+		return args[ i ], i
+	end
+	local ret = table.concat( cur, " " )
+	return ret, i
+end
+function PAdmin:ParseCommandString( args )
+	local res = {}
+	local buff = nil
+	local val
+	local i = 1
+	while( true )do
+		if( not args[i] )then
+			break
+		end
+		val, i = GetNextArg( args, i )
+		table.insert( res, val )
+		i = i + 1
 	end
 	return res
 end
