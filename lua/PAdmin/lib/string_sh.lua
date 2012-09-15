@@ -147,7 +147,6 @@ local function GetNextArg( args, i )
 	if( args[i][1] == '"' )then
 		while( true )do
 			if( not args[i] )then
-				print("ran out of args to look at!!!!")
 				break
 			end
 			table.insert( cur, args[i])
@@ -176,6 +175,5 @@ function PAdmin:ParseCommandString( args )
 		table.insert( res, val )
 		i = i + 1
 	end
-	PrintTable( res )
 	return res
 end
