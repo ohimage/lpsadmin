@@ -40,7 +40,7 @@ if(CLIENT)then
 else
 	util.AddNetworkString( "PAdmin_ReloadSV" )
 	local function reload( cl )
-		if(cl:IsSuperAdmin())then
+		if(cl:IsSuperAdmin() or cl:IsListenServerHost())then
 			include("autorun/padmin.lua")
 		else
 			cl:Kick("PAdmin: Attempting to hack reload system.")
