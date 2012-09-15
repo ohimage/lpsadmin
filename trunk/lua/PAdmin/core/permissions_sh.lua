@@ -155,15 +155,25 @@ function PAdmin:SaveGroups( )
 	PAdmin:LoadMsgLN()
 end
 
-hook.Add("PlayerInitialSpawn","PAdmin.Perms.SettupUser",function( ply )
-	if( ply:IsListenServerHost( ) )then
-		ply:SetNWInt("PAdmin.GroupID", 2 )
-		ply:SetNWString("UserGroup", PAdmin:GetGroupByID( 2 ):GetTitle() )
-	end
-end)
-
 local ply = FindMetaTable( "Player" )
 function ply:HasPermission( perm ) -- checking permissions.
 	local g = PAdmin:GetGroupByID( self:GetNWInt("PAdmin.GroupID", 1 ) )
 	return g:HasPermission( perm ) or g:HasPermission( '*' )
+end
+
+function ply:SetUserGroup( val )
+	if( type( val ) == "string" )then
+		for k,v in pairs( groups )do
+			if( v:GetTitle() == val )then
+				v:SetNWInt( "GroupID", val )
+				v:SetNWString("UserGroup", val )
+				break
+			end
+		end
+	elseif( type( val ) == "number" )then
+		if( groups[ val ] )then
+			v:SetNWInt( "GroupID", val )
+			v:SetNWString( "UserGroup", groups[ val ]:GetTitle()
+		end
+	end
 end

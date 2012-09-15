@@ -63,6 +63,7 @@ timer.Simple( 1, function()
 	for k,v in pairs(player.GetAll())do
 		hook.Call("PlayerSpawn",GM, v)
 		hook.Call("PlayerInitialSpawn",GM, v)
+		hook.Call("PlayerAuthed",GM, v, v:SteamID(), v:UniqueID())
 	end
 end)
 
@@ -72,9 +73,11 @@ Includes after this line
 
 -- Libraries First:
 shInclude( "config.lua" )
+shInclude("lib/player_sh.lua") -- genaric stuff library.
 shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- string library.
 shInclude("lib/genaric_sh.lua") -- genaric stuff library.
+
 -- Inbetween stuff:
 svInclude( "core/permissions_sh.lua" )
 shInclude( "core/commands_sh.lua" )

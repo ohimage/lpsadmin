@@ -223,17 +223,11 @@ if( CLIENT )then
 			local x, y = chat.GetChatBoxPos( )
 			local YPos = y - #results * 18 - 20
 			local cury
-			surface.SetDrawColor( Color( 255, 255, 255, 240 ) )
-			surface.SetFont( "coolvetica" )
+			
 			for k,v in ipairs( results )do
 				cury = k * 20 + YPos - 20
-				
-				surface.SetTextPos( x, cury )
-				surface.SetTextColor( 255, 255, 0, 255 )
-				surface.DrawText( v )
-				surface.SetTextPos( x + 1, cury + 1 )
-				surface.SetTextColor( 0, 0, 0, 50 )
-				surface.DrawText( v )
+				draw.SimpleText( v, "TargetID", x + 11, cury+1, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+				draw.SimpleText( v, "TargetID", x + 10, cury, Color( 255, 255, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 			end
 		end
 	end)
