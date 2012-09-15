@@ -182,7 +182,11 @@ if( CLIENT )then
 			local enteredTbl = { }
 			for k,v in pairs( tocans )do
 				if( k ~= #tocans )then
-					table.insert( enteredTbl, v )
+					if( string.find( v, " " ) )then
+						table.insert( enteredTbl, string.format("\"%s\"", v ))
+					else
+						table.insert( enteredTbl, string.format("%s", v ))
+					end
 				end
 			end
 			local entered = table.concat( enteredTbl, " ")
