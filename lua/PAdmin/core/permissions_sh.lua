@@ -65,6 +65,9 @@ end
 function Group_MT:HasPermission( perm )
 	return self._permissions[ perm ] == true
 end
+function Group_MT:GetPermissions()
+	return self._permissions
+end
 function Group_MT:SetColor( col )
 	self._color = col
 end
@@ -102,6 +105,12 @@ Group.__index = Group_MT
 PAdmin.Group = Group
 
 function PAdmin:GetGroupByID( id )
+	
+	if( groups[id ] )then
+		print("Getting group by id "..id )
+	else 
+		print("Failed to get group at ".. id )
+	end
 	return groups[ id ]
 end
 
@@ -157,23 +166,52 @@ end
 
 local ply = FindMetaTable( "Player" )
 function ply:HasPermission( perm ) -- checking permissions.
-	local g = PAdmin:GetGroupByID( self:GetNWInt("PAdmin.GroupID", 1 ) )
+	local g = PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1 ) )
 	return g:HasPermission( perm ) or g:HasPermission( '*' )
 end
-
 function ply:SetUserGroup( val )
 	if( type( val ) == "string" )then
 		for k,v in pairs( groups )do
 			if( v:GetTitle() == val )then
-				v:SetNWInt( "GroupID", val )
-				v:SetNWString("UserGroup", val )
+				self:SetNWInt( "GroupID", val )
+				self:SetNWString("UserGroup", val )
 				break
 			end
 		end
 	elseif( type( val ) == "number" )then
 		if( groups[ val ] )then
-			v:SetNWInt( "GroupID", val )
-			v:SetNWString( "UserGroup", groups[ val ]:GetTitle()
+			self:SetNWInt( "GroupID", val )
+			self:SetNWString( "UserGroup", groups[ val ]:GetTitle() )
 		end
 	end
+end
+function ply:GetUserGroup( val )
+	return PAdmin:GetGroupByID( self:GetNWInt("GroupID" ) ):GetTitle()
+end
+-- synching permissions tables.
+if(SERVER)then
+	util.AddNetworkString( "PAdmin.SendPerm" )
+	function PAdmin:SyncPermission( groupid, name, value, target)
+		net.Start( "PAdmin.SendPerm" )
+			net.WriteInt( groupid , 4)
+			net.WriteString( name )
+			net.WriteBit( value )
+		if( target )then
+			net.Send( target )
+		else
+			net.Broadcast()
+		end
+	end
+else
+	net.Receive( "PAdmin.SendPerm", function(length)
+		local id = net.ReadInt( 4 )
+		local name = net.ReadString()
+		local value = net.ReadBit()
+		PAdmin:LoadMsg("Recieved Perm Update "..name.." = "..value )
+		if( value )then
+			PAdmin:GetGroupByID( id ):AddPermission( name )
+		else
+			PAdmin:GetGroupByID( id ):RemovePermission( name )
+		end
+	end) -- some sort of error occuring. Not sure what it is caused by though its clearly logical.
 end

@@ -27,6 +27,8 @@ if(SERVER)then
 	
 	hook.Add("PlayerInitialSpawn","PAdmin.SettupData",function(ply)
 		loading[ ply:UserID() ] = ply
+		ply:SetNWInt( "GroupID", 1 )
+		ply:SetNWString( "UserGroup", "user" )
 	end)
 	
 	hook.Add("PlayerAuthed","PAdmin.Auth",function( ply, steamid, uniqueid )
@@ -39,13 +41,31 @@ if(SERVER)then
 	hook.Add("PlayerConnect","PAdmin.PlayerJoin",function( name, addr )
 		PAdmin:Notify( player.GetAll(), PAdmin.colors.neutral, "Player ", PAdmin.colors.player, name, PAdmin.colors.neutral, " connected.")
 	end)
-	
-	local PlyMeta = FindMetaTable( "Player" )
-	function PlyMeta:IsAuthed() -- check if the player is authed.
-		if( self.PAdmin_Authed )then
-			return true
-		else
-			return false
-		end
+end
+
+local PlyMeta = FindMetaTable( "Player" )
+function PlyMeta:IsAuthed() -- check if the player is authed.
+	if( CLIENT or self.PAdmin_Authed )then
+		return true
+	else
+		return false
 	end
+end
+-- returns the player's user group meta table.
+function PlyMeta:GetUserGroupTbl()
+	print("group from nw int is "..self:GetNWInt("GroupID", 1))
+	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
+end
+
+function PlyMeta:IsSuperAdmin()
+	print("Checking if player is superadmin.")
+	return self:GetUserGroupTbl():HasPermission( "superadmin" ) or self:GetUserGroupTbl():HasPermission( "*" )
+end
+
+function PlyMeta:IsAdmin()
+	print("Checking if player is admin.")
+	if( PlyMeta:IsSuperAdmin() )then
+		return true
+	end
+	return self:GetUserGroupTbl():HasPermission( "admin" )
 end

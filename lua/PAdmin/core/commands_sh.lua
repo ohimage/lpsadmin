@@ -33,6 +33,7 @@ local function AutoComplete( str )
 	local result = {}
 	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
 	local cmd = nil
+	local help = {}
 	if( #tocans == 1 )then
 		local firstArg = tocans[1]
 		for k,v in pairs( commands )do
@@ -45,6 +46,10 @@ local function AutoComplete( str )
 	cmd = tocans[ 1 ]
 	if( commands[ cmd ] )then
 		local cmdtbl = commands[ cmd ]
+		table.insert( help, "!"..cmd )
+		for k,v in pairs( cmdtbl.format )do
+			table.insert( help, v[2] )
+		end
 		local args = table.Copy( tocans )
 		table.remove( args, 1 )
 		local curArg = args[#args]
@@ -72,7 +77,7 @@ local function AutoComplete( str )
 	else
 		table.insert( result, "<None>" )
 	end
-	return result
+	return result, table.concat( help, " " )
 end
 
 local ConCmdParse
@@ -84,7 +89,7 @@ if(SERVER)then
 		if( commands[ cmd ] and args)then -- check its a valid command
 			print( string.format("Command %s was found!",cmd ) )
 			local cmd = commands[ cmd ]
-			if( (not ValidEntity( ply ) and ply:EntIndex() < 0 ) and ( not ply:HasPermission( cmd.perm ) ) )then
+			if( ValidEntity( ply ) and ply:EntIndex() > 0 and ( not ply:HasPermission( cmd.perm ) ) )then
 				PAdmin:Notice( ply, PAdmin.colors.error, string.format("You dont have permission %s.", cmd.perm ))
 				return
 			end
@@ -129,7 +134,7 @@ if(SERVER)then
 	hook.Add("PlayerSay", "PAdmin.c.ChatCmdHook", function( ply, text )
 		if( text[1] == cmdPrefix )then
 			text = string.sub( text, 2 )
-			local args = PAdmin:ParseCommandString( string.Explode( ' ', text ) )
+			local args = PAdmin:ParseCommandString(text )
 			parse( ply, args )
 			return ""
 		end
@@ -146,7 +151,7 @@ concommand.Add("PA",function( ply, cmd, args )
 	end
 end, function( cmd, args )
 	local options = AutoComplete( args )
-	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( args, 2 ) ) )
+	local tocans = PAdmin:ParseCommandString( string.sub( args, 2 ) )
 	local result = {}
 	local enteredTbl = { cmd }
 	for k,v in pairs( tocans )do
@@ -174,10 +179,11 @@ if( CLIENT )then
 	local results = nil
 	local delay = 0
 	local chatOpen = false
+	local help = nil
 	hook.Add("ChatTextChanged","PAdmin.AutoComplete",function(str)
 		if( delay ~= RealTime() and str and str[1] == cmdPrefix )then
-			local options = AutoComplete( str )
-			local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
+			local options, help = AutoComplete( str )
+			local tocans = PAdmin:ParseCommandString( string.sub( str, 2 ) )
 			local result = {}
 			local enteredTbl = { }
 			for k,v in pairs( tocans )do

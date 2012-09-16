@@ -142,38 +142,25 @@ function PAdmin:FormatPlayerTable( tbl )
 	return res
 end
 
-local function GetNextArg( args, i )
-	local cur = {}
-	if( args[i][1] == '"' )then
-		while( true )do
-			if( not args[i] )then
-				break
-			end
-			table.insert( cur, args[i])
-			if( args[i][ string.len( args[i] ) ] == '"' )then
-				break
-			end
-			i = i + 1
-		end
-	else
-		return args[ i ], i
-	end
-	local ret = table.concat( cur, " " )
-	return ret, i
-end
 function PAdmin:ParseCommandString( args )
-	local res = {}
-	local buff = nil
-	local val
-	local i = 1
-	while( true )do
-		if( not args[i] )then
-			break
-		end
-		val, i = GetNextArg( args, i )
-		val = string.gsub( val, '"', '')
-		table.insert( res, val )
-		i = i + 1
+	if( type( args ) == "table" )then
+		args = table.concat( args, " ")
 	end
+	local tocans = string.Explode( '"', args )
+	local res = {}
+	for k,v in pairs( tocans )do
+		if( k % 2 == 0 )then
+			if( string.len( v ) > 0 )then
+				table.insert( res, v )
+			end
+		else
+			for m,j in pairs( string.Explode( ' ' , v ) )do
+				if( string.len( j ) > 0 )then
+					table.insert( res, j )
+				end
+			end
+		end
+	end
+	PrintTable( res )
 	return res
 end
