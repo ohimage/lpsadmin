@@ -50,6 +50,10 @@ local function AutoComplete( str )
 	cmd = tocans[ 1 ]
 	cmd = string.lower( cmd )
 	local cmdtbl = commands[ cmd ]
+	if( not cmdtbl )then
+		return result
+	end
+	
 	table.insert( help, "!"..cmd )
 	for k,v in pairs( cmdtbl.format )do
 		table.insert( help, v[2] )
