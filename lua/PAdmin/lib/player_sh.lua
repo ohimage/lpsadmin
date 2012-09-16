@@ -9,7 +9,7 @@ if(SERVER)then
 			if( v and ValidEntity( v ) )then
 				print("Checking if "..v:Name().." is authed and ready for data.")
 				if( string.len( v:Name() ) > 0 and not string.find( v:SteamID() , "PENDING" ))then
-					if( validIDs[ v:UniqueID() ] )then
+					if( validIDs[ v:UniqueID() ] or v:IsBot())then
 						print("Player is authed and ready.")
 						validIDs[ v:UniqueID() ] = nil
 						v.PAdmin_Authed = true
@@ -53,19 +53,21 @@ function PlyMeta:IsAuthed() -- check if the player is authed.
 end
 -- returns the player's user group meta table.
 function PlyMeta:GetUserGroupTbl()
-	print("group from nw int is "..self:GetNWInt("GroupID", 1))
 	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
 end
 
 function PlyMeta:IsSuperAdmin()
-	print("Checking if player is superadmin.")
 	return self:GetUserGroupTbl():HasPermission( "superadmin" ) or self:GetUserGroupTbl():HasPermission( "*" )
 end
 
 function PlyMeta:IsAdmin()
-	print("Checking if player is admin.")
 	if( PlyMeta:IsSuperAdmin() )then
 		return true
 	end
 	return self:GetUserGroupTbl():HasPermission( "admin" )
+end
+
+function PlyMeta:HasPermission( perm )
+	local t = self:GetUserGroupTbl()
+	return t:HasPermission( perm ) or t:HasPermission( '*' )
 end
