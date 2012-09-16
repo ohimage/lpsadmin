@@ -161,6 +161,5 @@ function PAdmin:ParseCommandString( args )
 			end
 		end
 	end
-	PrintTable( res )
 	return res
 end

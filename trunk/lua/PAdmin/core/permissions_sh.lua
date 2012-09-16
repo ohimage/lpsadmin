@@ -38,7 +38,6 @@ function Group:FromTable( tbl )
 	setmetatable( new, Group )
 	new:SetFromTable( tbl )
 	new._id = tbl.id
-	groups[ tbl.id ] = new
 	return new
 end
 function Group:MakeUniqueID()
@@ -182,6 +181,7 @@ function ply:SetUserGroup( val )
 	if( type( val ) == "string" )then
 		for k,v in pairs( groups )do
 			if( v:GetTitle() == val )then
+				ErrorNoHalt("SetUserGroup invalid group specified!")
 				self:SetNWInt( "GroupID", val )
 				self:SetNWString("UserGroup", val )
 				break
@@ -236,9 +236,10 @@ else
 	
 	net.Receive( "PAdmin.SendGroup", function( length )
 		local groupTbl = net.ReadTable()
-		print("Recieved group data table: ")
+		print("Recieved group tbl: ")
 		PrintTable( groupTbl )
-		Group:FromTable( groupTbl )
+		local group = Group:FromTable( groupTbl )
+		PAdmin:RegisterGroup( group:GetID(), group )
 	end)
 	
 end

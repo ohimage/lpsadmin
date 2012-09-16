@@ -23,6 +23,7 @@ function PAdmin:RegisterCommand( name, tbl)
 		return
 	end
 	PAdmin:LoadMsg("Registered Command: "..name)
+	name = string.lower( name )
 	commands[ name ] = tbl
 end
 /*=========================
@@ -34,22 +35,27 @@ local function AutoComplete( str )
 	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
 	local cmd = nil
 	local help = {}
-	if( #tocans == 1 )then
+	if( not tocans[1] )then
+		return result
+	end
+	if( #tocans == 1)then
 		local firstArg = tocans[1]
 		for k,v in pairs( commands )do
-			if( string.find( k, firstArg ) )then
+			if( string.find( string.lower( k ), string.lower( firstArg ) ) and LocalPlayer():HasPermission( v.perm ))then
 				table.insert( result, k )
 			end
 		end
 		return result
 	end
 	cmd = tocans[ 1 ]
-	if( commands[ cmd ] )then
-		local cmdtbl = commands[ cmd ]
-		table.insert( help, "!"..cmd )
-		for k,v in pairs( cmdtbl.format )do
-			table.insert( help, v[2] )
-		end
+	cmd = string.lower( cmd )
+	local cmdtbl = commands[ cmd ]
+	table.insert( help, "!"..cmd )
+	for k,v in pairs( cmdtbl.format )do
+		table.insert( help, v[2] )
+	end
+	
+	if( commands[ cmd ] and LocalPlayer():HasPermission( commands[ cmd ].perm ) )then
 		local args = table.Copy( tocans )
 		table.remove( args, 1 )
 		local curArg = args[#args]
@@ -85,11 +91,12 @@ if(SERVER)then
 	-- the actual parsing of the commands
 	local function parse( ply, args )
 		local cmd = args[1]
+		cmd = string.lower( cmd )
 		table.remove( args, 1 )
 		if( commands[ cmd ] and args)then -- check its a valid command
 			print( string.format("Command %s was found!",cmd ) )
 			local cmd = commands[ cmd ]
-			if( ValidEntity( ply ) and ply:EntIndex() > 0 and ( not ply:HasPermission( cmd.perm ) ) )then
+			if( not ply:HasPermission( cmd.perm ) )then
 				PAdmin:Notice( ply, PAdmin.colors.error, string.format("You dont have permission %s.", cmd.perm ))
 				return
 			end
@@ -139,42 +146,57 @@ if(SERVER)then
 			return ""
 		end
 	end)
-	function ConCmdParse( ply, cmd, arg )
+	function ConCmdParse( ply, arg )
 		local args = PAdmin:ParseCommandString( arg )
 		parse( ply, args )
 	end
+	
+	util.AddNetworkString( "PAdmin.Command" )
+	net.Receive( "PAdmin.Command", function( length, ply )
+		if( length < 3000 )then
+			ConCmdParse( ply, args )
+		end
+	end)
 end
 
-concommand.Add("PA",function( ply, cmd, args )
-	if( SERVER )then
-		ConCmdParse( ply, cmd, args )
-	end
-end, function( cmd, args )
-	local options = AutoComplete( args )
-	local tocans = PAdmin:ParseCommandString( string.sub( args, 2 ) )
-	local result = {}
-	local enteredTbl = { cmd }
-	for k,v in pairs( tocans )do
-		if( k ~= #tocans )then
-			if( string.find( v, " " ) )then
-				table.insert( enteredTbl, string.format("\"%s\"", v ))
-			else
-				table.insert( enteredTbl, v )
+if( CLIENT )then
+	local nextRun = 0
+	concommand.Add("PA",function( ply, cmd, args )
+		if( RealTime() >= nextRun )then
+			local str = table.concat( args, ' ' )
+			net.Start("PAdmin.Command")
+				net.WriteString( str )
+			net.SendToServer( )
+			nextRun = RealTime() + 1
+		else
+			nextRun = nextRun + 1
+			chat.AddText(PAdmin.colors.warning,"Slow down! Your running commands to fast! Please wait ", nextRun - RealTime()," seconds.")
+		end
+	end, function( cmd, args )
+		local options = AutoComplete( args )
+		local tocans = PAdmin:ParseCommandString( string.sub( args, 2 ) )
+		local result = {}
+		local enteredTbl = { cmd }
+		for k,v in pairs( tocans )do
+			if( k ~= #tocans )then
+				if( string.find( v, " " ) )then
+					table.insert( enteredTbl, string.format("\"%s\"", v ))
+				else
+					table.insert( enteredTbl, v )
+				end
 			end
 		end
-	end
-	local entered = table.concat( enteredTbl, " ")
-	for k,v in pairs( options )do
-		if( string.find( v, " " ) )then
-			table.insert( result, string.format("%s \"%s\"", entered, v ))
-		else
-			table.insert( result, string.format("%s %s", entered, v ))
+		local entered = table.concat( enteredTbl, " ")
+		for k,v in pairs( options )do
+			if( string.find( v, " " ) )then
+				table.insert( result, string.format("%s \"%s\"", entered, v ))
+			else
+				table.insert( result, string.format("%s %s", entered, v ))
+			end
 		end
-	end
-	return result
-end)
-
-if( CLIENT )then
+		return result
+	end)
+	
 	-- its generally not too pretty but it gets the job done.
 	local results = nil
 	local delay = 0
@@ -182,7 +204,8 @@ if( CLIENT )then
 	local help = nil
 	hook.Add("ChatTextChanged","PAdmin.AutoComplete",function(str)
 		if( delay ~= RealTime() and str and str[1] == cmdPrefix )then
-			local options, help = AutoComplete( str )
+			local options, h = AutoComplete( str )
+			help = h
 			local tocans = PAdmin:ParseCommandString( string.sub( str, 2 ) )
 			local result = {}
 			local enteredTbl = { }
@@ -227,11 +250,16 @@ if( CLIENT )then
 	hook.Add("HUDPaint","PAdmin.DrawAutoComplete",function( )
 		if( results )then
 			local x, y = chat.GetChatBoxPos( )
-			local YPos = y - #results * 18 - 20
+			local YPos = y - #results * 18 - 30
 			local cury
 			
+			if( help )then
+				draw.SimpleText( help, "TargetID", x + 11, y, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+				draw.SimpleText( help, "TargetID", x + 10, y - 1, Color( 0, 200, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+			end
+			
 			for k,v in ipairs( results )do
-				cury = k * 20 + YPos - 20
+				cury = k * 20 + YPos
 				draw.SimpleText( v, "TargetID", x + 11, cury+1, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 				draw.SimpleText( v, "TargetID", x + 10, cury, Color( 255, 255, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 			end
