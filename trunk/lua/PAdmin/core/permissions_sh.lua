@@ -10,6 +10,10 @@ local groups = {}
 local Group = {}
 local Group_MT = {}
 
+function PAdmin:GetAllGroups()
+	return groups
+end
+
 function Group:New( id )
 	local new = {}
 	setmetatable( new, Group )
@@ -105,51 +109,56 @@ Group.__index = Group_MT
 PAdmin.Group = Group
 
 function PAdmin:GetGroupByID( id )
-	
-	if( groups[id ] )then
-		print("Getting group by id "..id )
-	else 
-		print("Failed to get group at ".. id )
+	if( not groups[ id ] )then
+		local noGroup = Group:New( 0 ) -- this is the group returned if there is none, so it will never be null.
+		noGroup:SetTitle( "none" )
+		noGroup:SetColor( Color( 255, 255, 255, 255 ) )
+		noGroup:SetImmunity( 0 )
+		return noGroup
+	else
+		return groups[ id ]
 	end
-	return groups[ id ]
 end
 
 -- loading groups.
-function PAdmin:LoadGroups( )
-	PAdmin:LoadMsgLN()
-	PAdmin:LoadMsg("Loading Groups:" )
-	PAdmin:LoadMsgLN()
-	local groupsFile = PAdmin:ReadFile( "groups/custom" )
-	if( not groupsFile ) then
-		PAdmin:LoadMsg("Custom Groups file not found.")
-		if( not groupsFile) then
-			local saveData = {}
-			local groupOwner = Group:New( 2 )
-			groupOwner:SetTitle( "owner" )
-			groupOwner:SetColor( Color( 0, 255, 255, 255 ) )
-			groupOwner:SetImmunity( 100 )
-			groupOwner:AddPermission( "*" )
-			table.insert( saveData, groupOwner:ToTable() )
-			local groupUser = Group:New( 1 )
-			groupUser:SetTitle( "guest" )
-			groupUser:SetColor( Color( 200, 200, 200, 255 ) )
-			groupUser:SetImmunity( 1 )
-			groupUser:AddPermission( "PAdmin.chat" )
-			groupUser:AddPermission( "PAdmin.voicechat" )
-			table.insert( saveData, groupUser:ToTable() )
-			groupsFile = glon.encode( saveData )
-			PAdmin:WriteFile( "groups/custom" , groupsFile )
+if(SERVER)then
+	function PAdmin:LoadGroups( )
+		PAdmin:LoadMsgLN()
+		PAdmin:LoadMsg("Loading Groups:" )
+		PAdmin:LoadMsgLN()
+		local groupsFile = PAdmin:ReadFile( "groups/custom" )
+		if( not groupsFile ) then
+			PAdmin:LoadMsg("Custom Groups file not found.")
+			if( not groupsFile) then
+				local saveData = {}
+				local groupOwner = Group:New( 2 )
+				groupOwner:SetTitle( "owner" )
+				groupOwner:SetColor( Color( 0, 255, 255, 255 ) )
+				groupOwner:SetImmunity( 100 )
+				groupOwner:AddPermission( "*" )
+				table.insert( saveData, groupOwner:ToTable() )
+				local groupUser = Group:New( 1 )
+				groupUser:SetTitle( "guest" )
+				groupUser:SetColor( Color( 200, 200, 200, 255 ) )
+				groupUser:SetImmunity( 1 )
+				groupUser:AddPermission( "PAdmin.chat" )
+				groupUser:AddPermission( "PAdmin.voicechat" )
+				table.insert( saveData, groupUser:ToTable() )
+				groupsFile = glon.encode( saveData )
+				PAdmin:WriteFile( "groups/custom" , groupsFile )
+			end
 		end
+		local allGroups = glon.decode( groupsFile )
+		for k,v in pairs( allGroups )do
+			PAdmin:LoadMsg("Loaded Group "..(v.title or v.id ))
+			local new = Group:FromTable( v )
+			PAdmin:RegisterGroup( v.id, new )
+		end
+		PAdmin:LoadMsg("Loaded groups: ")
+		PrintTable( groups )
 	end
-	local allGroups = glon.decode( groupsFile )
-	for k,v in pairs( allGroups )do
-		PAdmin:LoadMsg("Loaded Group "..(v.title or v.id ))
-		local new = Group:FromTable( v )
-		PAdmin:RegisterGroup( v.id, new )
-	end
-	PrintTable( groups )
+	PAdmin:LoadGroups()
 end
-PAdmin:LoadGroups()
 
 function PAdmin:SaveGroups( )
 	PAdmin:LoadMsgLN()
@@ -191,11 +200,21 @@ end
 -- synching permissions tables.
 if(SERVER)then
 	util.AddNetworkString( "PAdmin.SendPerm" )
+	util.AddNetworkString( "PAdmin.SendGroup" )
 	function PAdmin:SyncPermission( groupid, name, value, target)
 		net.Start( "PAdmin.SendPerm" )
 			net.WriteInt( groupid , 4)
 			net.WriteString( name )
 			net.WriteBit( value )
+		if( target )then
+			net.Send( target )
+		else
+			net.Broadcast()
+		end
+	end
+	function PAdmin:SendGroupData( grouptbl, target )
+		net.Start( "PAdmin.SendGroup" )
+			net.WriteTable( grouptbl:ToTable() )
 		if( target )then
 			net.Send( target )
 		else
@@ -213,5 +232,13 @@ else
 		else
 			PAdmin:GetGroupByID( id ):RemovePermission( name )
 		end
-	end) -- some sort of error occuring. Not sure what it is caused by though its clearly logical.
+	end)
+	
+	net.Receive( "PAdmin.SendGroup", function( length )
+		local groupTbl = net.ReadTable()
+		print("Recieved group data table: ")
+		PrintTable( groupTbl )
+		Group:FromTable( groupTbl )
+	end)
+	
 end
