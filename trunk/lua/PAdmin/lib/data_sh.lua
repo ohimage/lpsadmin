@@ -47,14 +47,16 @@ if( SERVER )then
 	
 	function PAdmin:LoadUser( ply )
 		local result = sql.Query(string.format( "SELECT * FROM PAdmin_Users WHERE uniqueid = %s", sql.SQLStr( ply:UniqueID() ) ) )
-		if( result )then
+		if( result and result[1])then
 			PAdmin:LoadMsg("Player has database entry.")
 			if( ply:IsListenServerHost())then
 				PAdmin:LoadMsg("Making server host Owner rank.")
 				sql.Query( string.format( "UPDATE PAdmin_Users SET groupid=%s WHERE uniqueid = %s", sql.SQLStr( 2 ), sql.SQLStr( ply:UniqueID() ) ) )
 			end
-			PrintTable( result )
-			ply:SetUserGroup( result[ groupid ] )
+			result = result[1] -- it returns multiple lines of the database, we only want the first one.
+			local groupID = tonumber( result.groupid or "1" )
+			ply:SetNWInt("GroupID",groupID)
+			ply:SetNWString( "UserGroup", PAdmin:GetGroupByID( groupID ):GetTitle()  )
 		else
 			PAdmin:LoadMsg("Created DataBase entry for user.")
 			local groupID
@@ -76,5 +78,12 @@ if( SERVER )then
 		PAdmin:LoadMsg("PAdmin Loading User data for "..ply:Nick() )
 		PAdmin:LoadUser( ply )
 		PAdmin:LoadMsgLN()
+		
+		PAdmin:LoadMsg("Beginning Permission sync.")
+		if( ply:GetUserGroupTbl() )then
+			for k,v in pairs( ply:GetUserGroupTbl():GetPermissions() )do
+				PAdmin:SyncPermission( ply:GetNWInt("GroupID", 1 ), k, v, ply )
+			end
+		end
 	end)
 end

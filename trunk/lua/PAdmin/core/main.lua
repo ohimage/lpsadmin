@@ -28,7 +28,7 @@ end
 
 if(CLIENT)then
 	concommand.Add("padmin_reload",function( ply )
-		if(ply:IsSuperAdmin())then
+		if( ply:IsSuperAdmin() )then
 			print("PAdmin: Reloading...")
 			net.Start( "PAdmin_ReloadSV" )
 			net.SendToServer( player.GetAll() )
@@ -79,7 +79,7 @@ shInclude("lib/string_sh.lua") -- string library.
 shInclude("lib/genaric_sh.lua") -- genaric stuff library.
 
 -- Inbetween stuff:
-svInclude( "core/permissions_sh.lua" )
+shInclude( "core/permissions_sh.lua" )
 shInclude( "core/commands_sh.lua" )
 -- Things with Dependencies Last
 shInclude("core/plugins_sh.lua")
