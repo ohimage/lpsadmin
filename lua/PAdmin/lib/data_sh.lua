@@ -79,11 +79,16 @@ if( SERVER )then
 		PAdmin:LoadUser( ply )
 		PAdmin:LoadMsgLN()
 		
-		PAdmin:LoadMsg("Beginning Permission sync.")
+		PAdmin:LoadMsg("Beginning Group sync.")
+		for k,v in pairs( PAdmin:GetAllGroups() )do
+			PAdmin:SendGroupData( v, ply )
+		end
+		
+		/*PAdmin:LoadMsg("Beginning Permission sync.")
 		if( ply:GetUserGroupTbl() )then
 			for k,v in pairs( ply:GetUserGroupTbl():GetPermissions() )do
 				PAdmin:SyncPermission( ply:GetNWInt("GroupID", 1 ), k, v, ply )
 			end
-		end
+		end*/
 	end)
 end
