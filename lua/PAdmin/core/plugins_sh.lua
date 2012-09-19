@@ -80,6 +80,8 @@ if(SERVER)then
 		svInclude( v )
 	end
 end
+PrintTable(shfiles)
+PrintTable(clfiles)
 -- include the files.
 for k,v in pairs( shfiles )do
 	PAdmin:LoadMsg( "Plugin: "..v )
