@@ -31,11 +31,13 @@ Command Parsing and Running
 =========================*/
 
 local function AutoComplete( str )
+	print("Running autocomplete!")
 	local result = {}
 	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
 	local cmd = nil
 	local help = {}
 	if( not tocans[1] )then
+		print("No tocan at tocans[1]")
 		return result
 	end
 	if( #tocans == 1)then
@@ -45,13 +47,15 @@ local function AutoComplete( str )
 				table.insert( result, k )
 			end
 		end
+		print("Found a command!")
 		return result
 	end
 	cmd = tocans[ 1 ]
 	cmd = string.lower( cmd )
 	local cmdtbl = commands[ cmd ]
 	if( not cmdtbl )then
-		return result
+		print("Command isnt a valid command.")
+		return {"<No Such Command>"}
 	end
 	
 	table.insert( help, "!"..cmd )
@@ -87,6 +91,7 @@ local function AutoComplete( str )
 	else
 		table.insert( result, "<None>" )
 	end
+	print("Made it to the end!")
 	return result, table.concat( help, " " )
 end
 
@@ -253,6 +258,7 @@ if( CLIENT )then
 	end)
 	hook.Add("HUDPaint","PAdmin.DrawAutoComplete",function( )
 		if( results )then
+			PrintTable( results )
 			local x, y = chat.GetChatBoxPos( )
 			local YPos = y - #results * 18 - 30
 			local cury
