@@ -31,13 +31,11 @@ Command Parsing and Running
 =========================*/
 
 local function AutoComplete( str )
-	print("Running autocomplete!")
 	local result = {}
 	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
 	local cmd = nil
 	local help = {}
 	if( not tocans[1] )then
-		print("No tocan at tocans[1]")
 		return result
 	end
 	if( #tocans == 1)then
@@ -54,7 +52,6 @@ local function AutoComplete( str )
 	cmd = string.lower( cmd )
 	local cmdtbl = commands[ cmd ]
 	if( not cmdtbl )then
-		print("Command isnt a valid command.")
 		return {"<No Such Command>"}
 	end
 	
@@ -91,7 +88,6 @@ local function AutoComplete( str )
 	else
 		table.insert( result, "<None>" )
 	end
-	print("Made it to the end!")
 	return result, table.concat( help, " " )
 end
 
@@ -162,8 +158,8 @@ if(SERVER)then
 	
 	util.AddNetworkString( "PAdmin.Command" )
 	net.Receive( "PAdmin.Command", function( length, ply )
-		if( length < 3000 )then
-			ConCmdParse( ply, args )
+		if( length < 5000 )then
+			ConCmdParse( ply, net.ReadString( ) )
 		end
 	end)
 end
@@ -173,6 +169,10 @@ if( CLIENT )then
 	concommand.Add("PA",function( ply, cmd, args )
 		if( RealTime() >= nextRun )then
 			local str = table.concat( args, ' ' )
+			if( string.len( str ) > 1000 )then
+				chat.AddText(PAdmin.colors.error,"Command is too long. Must be < 1000 charactors.")
+				return
+			end
 			net.Start("PAdmin.Command")
 				net.WriteString( str )
 			net.SendToServer( )
@@ -258,7 +258,6 @@ if( CLIENT )then
 	end)
 	hook.Add("HUDPaint","PAdmin.DrawAutoComplete",function( )
 		if( results )then
-			PrintTable( results )
 			local x, y = chat.GetChatBoxPos( )
 			local YPos = y - #results * 18 - 30
 			local cury

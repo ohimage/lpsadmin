@@ -72,7 +72,7 @@ Includes after this line
 ====================================*/
 
 -- Libraries First:
-shInclude( "config.lua" )
+shInclude("config.lua" )
 shInclude("lib/player_sh.lua") -- genaric stuff library.
 shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- string library.

@@ -43,53 +43,85 @@ function PAdmin:RegisterPlugin( name, tbl )
 	PAdmin:LoadMsg("Registered Plugin: "..name )
 end
 
--- include statements to make things easier.
-local function clInclude( path )
-	path = "PAdmin/plugins/"..path
-	if(CLIENT)then
-		include( path )
-	else
-		AddCSLuaFile( path )
-	end
-end
-local function svInclude( path )
-	path = "PAdmin/plugins/"..path
-	if(SERVER)then
-		include( path )
-	end
-end
-local function shInclude( path )
-	path = "PAdmin/plugins/"..path
-	if(SERVER)then
-		AddCSLuaFile( path )
-	end
-	include( path )
-end
 
--- find the proper files
-local shfiles = file.Find( "PAdmin/plugins/*_sh.lua", "lsv" )
-local clfiles = file.Find( "PAdmin/plugins/*_cl.lua", "lsv" )
-local svfiles = nil
-PAdmin:LoadMsgLN()
-PAdmin:LoadMsg( "Loading Plugins: " )
-PAdmin:LoadMsgLN()
+local clfiles = {}
 if(SERVER)then
-	svfiles = file.Find( "PAdmin/plugins/*_sv.lua", "lsv" )
+	local svfiles = {}
+
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Scanning for plugins:")
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Generating List:")
+	local function ScanDirectory( dir )
+		local count = 0
+		-- scan for shared files.
+		for k,v in pairs( file.Find( dir.."*_sh.lua", "lsv" ) )do
+			count = count + 1
+			local n = dir..v
+			table.insert( svfiles, n )
+			table.insert( clfiles, n )
+		end
+		-- scan for client files.
+		for k,v in pairs( file.Find( dir.."*_cl.lua", "lsv" ) )do
+			count = count + 1
+			table.insert( clfiles, dir..v )
+		end
+		-- scan for server files.
+		for k,v in pairs( file.Find( dir.."*_sv.lua", "lsv" ) )do
+			count = count + 1
+			table.insert( svfiles, dir..v )
+		end
+		PAdmin:LoadMsg( string.format("Scanning Dir %s found %d files.",dir, count ) )
+		-- scan for other directories.
+		for k,v in pairs( file.FindDir( dir.."*", "lsv" ))do
+			ScanDirectory( dir..v.."/" )
+		end
+	end
+	ScanDirectory("PAdmin/plugins/")
+	
+	-- processing serverside files.
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Loading SV Files:")
 	for k,v in pairs( svfiles )do
-		PAdmin:LoadMsg( "Plugin: "..v )
-		svInclude( v )
+		PAdmin:LoadMsg( string.format("Loading %s on server.", v ) )
+		include( v )
+	end
+	
+	-- processing clientside files.
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Adding CL Files to Cache:")
+	for k,v in pairs( clfiles )do
+		PAdmin:LoadMsg( string.format("Adding %s to CSLuaFile Cache.", v ) )
+		AddCSLuaFile( v )
 	end
 end
 
--- include the files.
-for k,v in pairs( shfiles )do
-	PAdmin:LoadMsg( "Plugin: "..v )
-	shInclude( v )
+/*==========================
+Sending Clientside Datapack.
+==========================*/
+
+if(SERVER)then
+	util.AddNetworkString( "PAdmin.SendCLFileList" )
+	hook.Add("PAdmin_PlayerAuthed","PAdmin.SendCLFiles",function( ply )
+		PAdmin:LoadMsgLN()
+		PAdmin:LoadMsg("Sending Plugin List to "..ply:Name()..".")
+		net.Start( "PAdmin.SendCLFileList" )
+			net.WriteTable( clfiles )
+		net.Send( ply )
+	end)
+elseif(CLIENT)then
+	net.Receive( "PAdmin.SendCLFileList", function(length)
+		PAdmin:LoadMsgLN()
+		PAdmin:LoadMsg("Recieved Plugin list from Server.")
+		PAdmin:LoadMsg("List Data Size is "..length )
+		local tbl = net.ReadTable()
+		for k,v in pairs( tbl )do
+			include( v )
+		end
+		PAdmin:LoadMsgLN()
+	end)
 end
-for k,v in pairs( clfiles )do
-	PAdmin:LoadMsg( "Plugin: "..v )
-	clInclude( v )
-end
+
 
 /*==========================
 Other Plugin System Features
@@ -139,3 +171,6 @@ for k,v in pairs( p )do
 		v:Init()
 	end
 end
+
+PAdmin:LoadMsg("Done loading plugins.")
+PAdmin:LoadMsgLN()
