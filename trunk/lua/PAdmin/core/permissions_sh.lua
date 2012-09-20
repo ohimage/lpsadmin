@@ -60,10 +60,12 @@ function Group_MT:GetImmunity()
 	return self._immunity
 end
 function Group_MT:AddPermission( perm )
-	self._permissions[ perm ] = true 
+	self._permissions[ perm ] = true
+	PAdmin:SyncPermission( self:GetID(), perm, true, player.GetAll() )
 end
 function Group_MT:RemovePermission( perm )
 	self._permissions[ perm ] = nil
+	PAdmin:SyncPermission( self:GetID(), perm, false, player.GetAll() )
 end
 function Group_MT:HasPermission( perm )
 	return self._permissions[ perm ] == true

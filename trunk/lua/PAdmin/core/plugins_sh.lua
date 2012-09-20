@@ -116,6 +116,7 @@ elseif(CLIENT)then
 		PAdmin:LoadMsg("List Data Size is "..length )
 		local tbl = net.ReadTable()
 		for k,v in pairs( tbl )do
+			PAdmin:LoadMsg("Loading Plugin "..v )
 			include( v )
 		end
 		PAdmin:LoadMsgLN()

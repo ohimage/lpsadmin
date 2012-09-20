@@ -53,21 +53,22 @@ function PlyMeta:IsAuthed() -- check if the player is authed.
 end
 -- returns the player's user group meta table.
 function PlyMeta:GetUserGroupTbl()
+	if( not ValidEntity( self ))then return nil end
 	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
-end
-
-function PlyMeta:IsSuperAdmin()
-	return self:GetUserGroupTbl():HasPermission( "superadmin" ) or self:GetUserGroupTbl():HasPermission( "*" )
-end
-
-function PlyMeta:IsAdmin()
-	if( PlyMeta:IsSuperAdmin() )then
-		return true
-	end
-	return self:GetUserGroupTbl():HasPermission( "admin" )
 end
 
 function PlyMeta:HasPermission( perm )
 	local t = self:GetUserGroupTbl()
 	return t:HasPermission( perm ) or t:HasPermission( '*' )
+end
+
+function PlyMeta:IsSuperAdmin()
+	return self:HasPermission( "superadmin" )
+end
+
+function PlyMeta:IsAdmin()
+	if( self:IsSuperAdmin() )then
+		return true
+	end
+	return self:HasPermission( "admin" )
 end
