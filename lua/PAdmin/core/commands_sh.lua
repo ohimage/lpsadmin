@@ -88,6 +88,9 @@ local function AutoComplete( str )
 	else
 		table.insert( result, "<None>" )
 	end
+	if( #result == 0 )then
+		result = {"PAdmin: Enter a command"}
+	end
 	return result, table.concat( help, " " )
 end
 
@@ -166,7 +169,9 @@ end
 
 if( CLIENT )then
 	local nextRun = 0
-	concommand.Add("PA",function( ply, cmd, args )
+	concommand.Add("PA", cmd_run, cmd_auto)
+	concommand.Add("PAdmin", cmd_run, cmd_auto)
+	local cmd_run = function( ply, cmd, args )
 		if( RealTime() >= nextRun )then
 			local str = table.concat( args, ' ' )
 			if( string.len( str ) > 1000 )then
@@ -181,7 +186,9 @@ if( CLIENT )then
 			nextRun = nextRun + 1
 			chat.AddText(PAdmin.colors.warning,"Slow down! Your running commands to fast! Please wait ", nextRun - RealTime()," seconds.")
 		end
-	end, function( cmd, args )
+	end
+	
+	local cmd_auto = function( cmd, args )
 		local options = AutoComplete( args )
 		local tocans = PAdmin:ParseCommandString( string.sub( args, 2 ) )
 		local result = {}
@@ -204,7 +211,8 @@ if( CLIENT )then
 			end
 		end
 		return result
-	end)
+	end
+	
 	
 	-- its generally not too pretty but it gets the job done.
 	local results = nil
@@ -250,8 +258,8 @@ if( CLIENT )then
 			else
 				ret = "!"..results[1]
 			end
-			table.insert( results, 1, results[#results ] )
-			table.remove( results, #results )
+			table.insert( results, results[ 1 ] )
+			table.remove( results, 1 )
 			delay = RealTime()
 			return ret
 		end
@@ -259,18 +267,17 @@ if( CLIENT )then
 	hook.Add("HUDPaint","PAdmin.DrawAutoComplete",function( )
 		if( results )then
 			local x, y = chat.GetChatBoxPos( )
-			local YPos = y - #results * 18 - 30
+			local YPos = y - 30 - #results * 18
 			local cury
 			
-			if( help )then
-				draw.SimpleText( help, "TargetID", x + 11, y, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-				draw.SimpleText( help, "TargetID", x + 10, y - 1, Color( 0, 200, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-			end
-			
 			for k,v in ipairs( results )do
-				cury = k * 20 + YPos
+				cury = YPos + k * 18
 				draw.SimpleText( v, "TargetID", x + 11, cury+1, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 				draw.SimpleText( v, "TargetID", x + 10, cury, Color( 255, 255, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+			end
+			if( help )then
+				draw.SimpleText( help, "TargetID", x + 11, cury + 18, Color( 0, 0, 0, 155 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+				draw.SimpleText( help, "TargetID", x + 10, cury + 17, Color( 0, 200, 0, 255 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
 			end
 		end
 	end)
