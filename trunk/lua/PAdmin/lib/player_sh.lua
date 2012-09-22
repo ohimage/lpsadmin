@@ -1,3 +1,15 @@
+//  ___                             ___
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
+/*
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
+*/
+
 if(SERVER)then
 	-- generally authing players.
 	local loading = {}
@@ -6,7 +18,7 @@ if(SERVER)then
 	-- check if user is authed.
 	timer.Create("PAdmin.LoadPlayers", 3, 0, function()
 		for k,v in pairs( loading )do
-			if( v and ValidEntity( v ) )then
+			if( v and v:EntIndex() >= 0 )then
 				print("Checking if "..v:Name().." is authed and ready for data.")
 				if( string.len( v:Name() ) > 0 and not string.find( v:SteamID() , "PENDING" ))then
 					if( validIDs[ v:UniqueID() ] or v:IsBot())then
@@ -32,7 +44,7 @@ if(SERVER)then
 	end)
 	
 	hook.Add("PlayerAuthed","PAdmin.Auth",function( ply, steamid, uniqueid )
-		if( ply and ValidEntity( ply ) )then
+		if( ply )then
 			print("PAdmin: Recieved SteamID auth for "..ply:Nick()..".")
 		end
 		validIDs[ uniqueid ] = true
@@ -53,7 +65,7 @@ function PlyMeta:IsAuthed() -- check if the player is authed.
 end
 -- returns the player's user group meta table.
 function PlyMeta:GetUserGroupTbl()
-	if( not ValidEntity( self ))then return nil end
+	if( not self )then return nil end
 	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
 end
 

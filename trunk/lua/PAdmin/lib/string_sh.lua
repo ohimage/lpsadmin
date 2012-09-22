@@ -1,3 +1,16 @@
+//  ___                             ___        
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _  
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_|||| 
+//                                                                                                     
+/*
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
+*/
+
 function PAdmin:TimeToMinutes(  str )
 	local time = 0
 	local cur = ""
