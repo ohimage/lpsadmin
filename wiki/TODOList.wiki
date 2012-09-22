@@ -1,0 +1,42 @@
+#summary Themis Admin Mod TO-DO List
+#labels Phase-Requirements,Phase-Design,Phase-Implementation
+
+= Plugins =
+
+== Commands ==
+
+ # *Add file:* goto_sh.lua
+ # *Add file:* bring_sh.lua
+
+ *====freeze_sh.lua====
+  # *Optional:* Add ice block model to surround frozen player.
+
+ *====cexec_sh.lua====
+  # Disable lua_run and other exploitative commands.
+
+ *====sethealth_sh.lua====
+  # *Optional:* Add sounds/effects to make this better.
+
+ *====setrank_sh.lua====
+  # *Optional:* Add sounds/effects to make this better.
+
+ *====slay_sh.lua====
+  # Add optional argument: explode - explodes target into pieces
+  # Add optional argument: trainfuck - drops train on target
+ *====teleport_sh.lua====
+  # Fix Bug: Teleporting into corners puts player in wall.
+  # Fix Bug: Teleporting onto top skybox puts player outside map.
+  # Add Command: goto, bring.
+  # *Optional:* Add sounds/effects to make this better.
+
+== Extras ==
+
+ *====Welcome_sh.lua====
+  #Add filters to display country names better.
+
+== SQL Database Manager ==
+
+ *====main_sh.lua====
+  # Upgrade GUI
+  # Allow database editing in-game.
+  # 
