@@ -37,5 +37,6 @@
 == SQL Database Manager ==
 
  *====main_sh.lua====
+  # Fix Bug: No database selected > Display Database button
   # Upgrade GUI
   # Allow database editing in-game.
