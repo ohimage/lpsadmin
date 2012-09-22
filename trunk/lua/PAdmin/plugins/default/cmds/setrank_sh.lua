@@ -24,7 +24,7 @@ tbl.run = function( ply, args )
 	if(res)then
 		if(PAdmin:GetGroupByID( tonumber( args[2] ) ))then
 			local val = args[2]
-			PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " set ", res, "'s rank to ",PAdmin.colors.purple, args[1] )
+			PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " set ", res, "'s rank to ",PAdmin.colors.purple, args[2] )
 			if( type( val ) == "string" )then
 				for k,v in pairs( PAdmin:GetAllGroups() )do
 					if( v:GetTitle() == val )then
