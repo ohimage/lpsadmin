@@ -1,3 +1,15 @@
+//  ___                             ___        
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _  
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
+/*
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
+*/
+
 PAdmin:LoadMsgLN()
 PAdmin:LoadMsg( "Loading Commands_sh.lua" )
 PAdmin:LoadMsgLN()
@@ -169,8 +181,7 @@ end
 
 if( CLIENT )then
 	local nextRun = 0
-	concommand.Add("PA", cmd_run, cmd_auto)
-	concommand.Add("PAdmin", cmd_run, cmd_auto)
+	
 	local cmd_run = function( ply, cmd, args )
 		if( RealTime() >= nextRun )then
 			local str = table.concat( args, ' ' )
@@ -213,6 +224,8 @@ if( CLIENT )then
 		return result
 	end
 	
+	concommand.Add("PA", cmd_run, cmd_auto)
+	concommand.Add("PAdmin", cmd_run, cmd_auto)
 	
 	-- its generally not too pretty but it gets the job done.
 	local results = nil

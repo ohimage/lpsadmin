@@ -1,8 +1,13 @@
+//  ___                             ___        
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _  
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
 /*
-	LPS Admin mod by TheLastPenguin and Trip
-	This admin mod is created for the needs and use of ||LPS|| Servers
-	URL: http://lastpenguin.com
-	It may be reused so long as proper credits are given.
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 local function clInclude( path )
 	path = "PAdmin/"..path
@@ -51,12 +56,23 @@ else
 	end );
 	concommand.Add("PAdmin_reloadSV", reload )
 end
+local colBorder = nil
+local colText = nil
+if(SERVER)then
+	colBorder = Color( 0, 0, 255 )
+	colText = Color( 0, 155, 255 )
+else
+	colBorder = Color( 255, 0, 0 )
+	colText = Color( 255, 155, 0 )
+end
 function PAdmin:LoadMsg( msg )
-	local len = math.Max( 1, 80 - string.len( msg ) )
-	MsgN(string.format( "|| %s%"..len.."s ||", msg, "" ) )
+	local len = math.Max( 1, 70 - string.len( msg ) )
+	MsgC(colBorder, "||" )
+	MsgC(colText, string.format( " %s%"..len.."s ", msg, "" ) )
+	MsgC(colBorder, "||\n")
 end
 function PAdmin:LoadMsgLN( )
-	MsgN( "||==================================================================================||" )
+	MsgC( colBorder, "||========================================================================||\n" )
 end
 
 timer.Simple( 1, function()
@@ -66,6 +82,30 @@ timer.Simple( 1, function()
 		hook.Call("PlayerAuthed",GM, v, v:SteamID(), v:UniqueID())
 	end
 end)
+PAdmin:LoadMsgLN()
+MsgC(colText, [[
+ ______  __                                       
+/\__  _\/\ \                         __           
+\/_/\ \/\ \ \___      __    ___ ___ /\_\    ____  
+   \ \ \ \ \  _ `\  /'__`\/' __` __`\/\ \  /',__\ 
+    \ \ \ \ \ \ \ \/\  __//\ \/\ \/\ \ \ \/\__, `\
+     \ \_\ \ \_\ \_\ \____\ \_\ \_\ \_\ \_\/\____/
+      \/_/  \/_/\/_/\/____/\/_/\/_/\/_/\/_/\/___/ 
+]])
+MsgC( colText, [[
+ ______      __                             
+/\  _  \    /\ \              __            
+\ \ \L\ \   \_\ \    ___ ___ /\_\    ___    
+ \ \  __ \  /'_` \ /' __` __`\/\ \ /' _ `\  
+  \ \ \/\ \/\ \L\ \/\ \/\ \/\ \ \ \/\ \/\ \ 
+   \ \_\ \_\ \___,_\ \_\ \_\ \_\ \_\ \_\ \_\
+    \/_/\/_/\/__,_ /\/_/\/_/\/_/\/_/\/_/\/_/
+]])
+PAdmin:LoadMsgLN()
+PAdmin:LoadMsg("Loading PAdmin version "..PAdmin.Version..".")
+PAdmin:LoadMsg("Mod framework by TheLastPenguin.")
+PAdmin:LoadMsg("Mod core plugin set by Trip.")
+PAdmin:LoadMsgLN()
 
 /*====================================
 Includes after this line

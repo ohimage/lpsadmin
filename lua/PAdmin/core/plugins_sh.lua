@@ -1,8 +1,13 @@
+//  ___                             ___
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
 /*
-LPS Admin mod by TheLastPenguin and Trip
-This admin mod is created for the needs and use of ||LPS|| Servers
-URL: http://lastpenguin.com
-It may be reused so long as proper credits are given.
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 
 -- include statements to make things easier.

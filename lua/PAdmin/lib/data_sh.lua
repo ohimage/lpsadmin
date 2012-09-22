@@ -1,3 +1,15 @@
+//  ___                             ___        
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _  
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
+/*
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
+*/
+
 function PAdmin:WriteFile( path, data )
 	if( not string.find( path, "PAdmin/"))then
 		path = "PAdmin/"..path
@@ -72,6 +84,12 @@ if( SERVER )then
 			return
 		end
 	end
+	
+	function PAdmin:SavePlayerGroup( ply )
+		PAdmin:LoadMsg("Saved usergroup for "..ply:Nick().." to "..ply:GetUserGroup())
+		sql.Query( string.format( "UPDATE PAdmin_Users SET groupid=%s WHERE uniqueid = %s", sql.SQLStr( ply:GetNWInt("GroupID") ), sql.SQLStr( ply:UniqueID() )))
+	end
+	
 	-- this starts the data load.
 	hook.Add("PAdmin_PlayerAuthed","PAdminLoadData",function( ply )
 		PAdmin:LoadMsgLN()
@@ -83,12 +101,5 @@ if( SERVER )then
 		for k,v in pairs( PAdmin:GetAllGroups() )do
 			PAdmin:SendGroupData( v, ply )
 		end
-		
-		/*PAdmin:LoadMsg("Beginning Permission sync.")
-		if( ply:GetUserGroupTbl() )then
-			for k,v in pairs( ply:GetUserGroupTbl():GetPermissions() )do
-				PAdmin:SyncPermission( ply:GetNWInt("GroupID", 1 ), k, v, ply )
-			end
-		end*/
 	end)
 end

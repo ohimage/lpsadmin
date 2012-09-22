@@ -1,3 +1,15 @@
+//  ___                             ___
+//   | |_  _ _ . _   /\  _| _ . _    | _ _  _
+//   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
+/*
+	LPS Admin mod by TheLastPenguin
+	This admin mod is an opensource Administration tool for Gmod 13.
+	URL: lpsadmin.googlecode.com
+	Parts of this sourcecode less than 75 lines TOTAL ( not consecutive ) may be used in other projects
+		Proper credit must be given to the PAdmin development team in all cases.
+		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
+*/
+
 /*=====================================
 Permissions system to check if players can do stuff.
 =====================================*/
@@ -183,22 +195,25 @@ function ply:SetUserGroup( val )
 	if( type( val ) == "string" )then
 		for k,v in pairs( groups )do
 			if( v:GetTitle() == val )then
-				ErrorNoHalt("SetUserGroup invalid group specified!")
-				self:SetNWInt( "GroupID", val )
+				self:SetNWInt( "GroupID", v:GetID() )
 				self:SetNWString("UserGroup", val )
-				break
+				return
 			end
 		end
 	elseif( type( val ) == "number" )then
 		if( groups[ val ] )then
 			self:SetNWInt( "GroupID", val )
 			self:SetNWString( "UserGroup", groups[ val ]:GetTitle() )
+			return 
 		end
 	end
+	--ErrorNoHalt("SetUserGroup invalid group specified!")
 end
+
 function ply:GetUserGroup( val )
 	return PAdmin:GetGroupByID( self:GetNWInt("GroupID" ) ):GetTitle()
 end
+
 -- synching permissions tables.
 if(SERVER)then
 	util.AddNetworkString( "PAdmin.SendPerm" )
@@ -243,5 +258,4 @@ else
 		local group = Group:FromTable( groupTbl )
 		PAdmin:RegisterGroup( group:GetID(), group )
 	end)
-	
 end
