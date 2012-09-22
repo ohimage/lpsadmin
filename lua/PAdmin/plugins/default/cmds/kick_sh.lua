@@ -21,9 +21,9 @@ tbl.run = function( ply, args )
 	else
 		reason = "Kicked by Admin"
 	end
-	res:Kick()
 	if not reason then reason = "Admin Control" end
 	PAdmin:Notify( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.good, " kicked ", PAdmin.colors.neutral, res, " with reason: ", reason )
+	res:Kick( reason )
 end
 
 PAdmin:RegisterCommand( "kick" , tbl )
