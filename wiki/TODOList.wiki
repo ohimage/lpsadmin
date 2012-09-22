@@ -39,4 +39,3 @@
  *====main_sh.lua====
   # Upgrade GUI
   # Allow database editing in-game.
-  # 
