@@ -11,7 +11,10 @@
 		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 
-function PAdmin:TimeToMinutes(  str )
+local string = string
+local table = table
+
+function PAdmin:TimeToMinutes( str )
 	local time = 0
 	local cur = ""
 	for i = 1, string.len( str )do
