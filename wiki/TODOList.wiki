@@ -32,7 +32,7 @@
 == Extras ==
 
  *====Welcome_sh.lua====
-  #Add filters to display country names better.
+  # ~~Add filters to display country names better.~~
 
 == SQL Database Manager ==
 
