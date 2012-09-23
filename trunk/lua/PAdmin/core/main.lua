@@ -113,6 +113,7 @@ Includes after this line
 
 -- Libraries First:
 shInclude("config.lua" )
+svInclude("lib/sourcebans.lua") -- Ban system. Not by me. Made by source bans team.
 shInclude("lib/player_sh.lua") -- genaric stuff library.
 shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- string library.

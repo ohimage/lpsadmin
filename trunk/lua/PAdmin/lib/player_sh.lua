@@ -99,5 +99,5 @@ function PAdmin:BanPlayer( ply, time, reason, admin)
 	if( not reason )then reason = "<none>" end
 	print("Called save ban info.")
 	PAdmin:SaveBanInfo( target, admin, os.time() + time * 60, reason )
-	RunConsoleCommand( "banid", "0",target, "1" )
+	game.ConsoleCommand("banid 0 "..target.." 0")
 end
