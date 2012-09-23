@@ -10,6 +10,10 @@
 		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 
+local PAdmin = PAdmin
+local string = string
+local table = table
+
 PAdmin:LoadMsgLN()
 PAdmin:LoadMsg( "Loading Commands_sh.lua" )
 PAdmin:LoadMsgLN()
@@ -89,6 +93,13 @@ local function AutoComplete( str )
 						for k,v in pairs( plys )do
 							table.insert( result, v:Name() )
 						end
+					elseif( f[1] == PAdmin.types.STEAMID )then
+						local curArg = string.lower( curArg )
+						for k,v in pairs( player.GetAll() )do
+							if( string.match( curArg, string.lower( v:SteamID() ) ) )then
+								table.insert( result, '"'..v:SteamID()..'"' )
+							end
+						end
 					else
 						table.insert( result, f[2] )
 					end
@@ -101,7 +112,7 @@ local function AutoComplete( str )
 		table.insert( result, "<None>" )
 	end
 	if( #result == 0 )then
-		result = {"PAdmin: Enter a command"}
+		result = {"<none>"}
 	end
 	return result, table.concat( help, " " )
 end

@@ -10,6 +10,12 @@
 		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 
+PAdmin:LoadMsgLN()
+PAdmin:LoadMsg("Loading Data Library.")
+
+local PAdmin = PAdmin
+local sql = sql
+
 function PAdmin:WriteFile( path, data )
 	if( not string.find( path, "PAdmin/"))then
 		path = "PAdmin/"..path
@@ -39,6 +45,7 @@ PAdmin:CheckDir( "PAdmin")
 
 sql.Begin()
 	sql.Query( "CREATE TABLE IF NOT EXISTS PAdmin_Users ( id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, uniqueid INT, steamid VARCHAR( 20 ), name VARCHAR( 30 ), groupid INT)" )
+	sql.Query( "CREATE TABLE IF NOT EXISTS PAdmin_Bans ( steamid VARCHAR( 30 ), name VARCHAR( 30 ), AdminName VARCHAR( 30 ), UnbanDate INT, reason VARCHAR( 255 ))" )
 sql.Commit()
 
 if( SERVER )then
@@ -102,4 +109,45 @@ if( SERVER )then
 			PAdmin:SendGroupData( v, ply )
 		end
 	end)
+	
+	-- registers a ban in the table. This is NOT the same as banning a user. It just makes the mod think
+	-- that the player is banned.
+	function PAdmin:SaveBanInfo( steamid, admin_name, UnbanDate, reason )
+		UnbanDate = math.Round( UnbanDate )
+		if( not ( steamid and UnbanDate ) )then return end
+		local name = nil
+		local result = sql.QueryValue(string.format( "SELECT name FROM PAdmin_Users WHERE steamid = %s", sql.SQLStr( steamid ) ) )
+		if( result )then
+			name = result
+		else
+			name = "<unknown>"
+		end
+		if( not reason )then
+			reason = "Banned by Admin."
+		end
+		PAdmin:LoadMsgLN()
+		PAdmin:LoadMsg("Banning "..name.." steamid "..steamid )
+		local query = string.format( "INSERT INTO PAdmin_Bans ( steamid, name, AdminName, UnbanDate, reason ) VALUES ( %s, %s, %s, %s, %s )", sql.SQLStr( steamid ), sql.SQLStr( name ), sql.SQLStr( admin_name ),  sql.SQLStr( UnbanDate ), sql.SQLStr( reason ) )
+		PAdmin:LoadMsg( query )
+		PAdmin:LoadMsgLN()
+		sql.Query( query )
+	end
+	
+	-- this timer will scan the Ban table for expired bans and remove them.
+	timer.Create("PAdmin.CheckBans",30, 0, function()
+		local res = sql.Query( "SELECT * FROM PAdmin_Bans WHERE UnbanDate != '0' AND UnbanDate <= "..sql.SQLStr( math.Round( os.time() ) ) )
+		if( res )then
+			PAdmin:LoadMsgLN()
+			PAdmin:LoadMsg("Removing expired bans")
+			for k,v in pairs( res )do
+				PAdmin:LoadMsg( string.format("Removing ban filter on %s uid %d", v[ "name" ], v[ "steamid" ] ) )
+				RunConsoleCommand("removeid", tostring( v[ "steamid" ] ) )
+			end
+			PAdmin:LoadMsg("Purging expired ban records.")
+			sql.Query( "DELETE FROM PAdmin_Bans WHERE UnbanDate != '0' AND UnbanDate <= "..sql.SQLStr( math.Round( os.time() ) ) )
+			PAdmin:LoadMsgLN()
+		end
+	end)
 end
+
+PAdmin:LoadMsgLN()

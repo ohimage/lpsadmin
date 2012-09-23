@@ -18,7 +18,7 @@ if(SERVER)then
 	-- check if user is authed.
 	timer.Create("PAdmin.LoadPlayers", 3, 0, function()
 		for k,v in pairs( loading )do
-			if( v and v:EntIndex() >= 0 )then
+			if( v and v:IsValid() and v:EntIndex() >= 0 )then
 				print("Checking if "..v:Name().." is authed and ready for data.")
 				if( string.len( v:Name() ) > 0 and not string.find( v:SteamID() , "PENDING" ))then
 					if( validIDs[ v:UniqueID() ] or v:IsBot())then
@@ -83,4 +83,21 @@ function PlyMeta:IsAdmin()
 		return true
 	end
 	return self:HasPermission( "admin" )
+end
+
+-- this actually bans the player and tells PAdmin they are a banned motherfucker.
+-- arguements are the player's uniqueid or entity, time in minutes, reason, admin as entity.
+function PAdmin:BanPlayer( ply, time, reason, admin)
+	print("banning.")
+	local target = nil
+	if( type( ply ) == "Player" )then
+		target = ply:SteamID()
+	else
+		target = tonumber( ply )
+	end
+	if( not ( admin and admin:IsValid() ) )then admin = '(Console' else admin = admin:Name() end
+	if( not reason )then reason = "<none>" end
+	print("Called save ban info.")
+	PAdmin:SaveBanInfo( target, admin, os.time() + time * 60, reason )
+	RunConsoleCommand( "banid", "0",target, "1" )
 end
