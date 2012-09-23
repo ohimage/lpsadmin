@@ -177,5 +177,8 @@ function PAdmin:ParseCommandString( args )
 			end
 		end
 	end
+	if( args[string.len( args ) ] == ' ' )then
+		table.insert( res, '' )
+	end
 	return res
 end

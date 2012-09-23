@@ -140,7 +140,7 @@ if( SERVER )then
 			PAdmin:LoadMsgLN()
 			PAdmin:LoadMsg("Removing expired bans")
 			for k,v in pairs( res )do
-				PAdmin:LoadMsg( string.format("Removing ban filter on %s uid %d", v[ "name" ], v[ "steamid" ] ) )
+				PAdmin:LoadMsg( string.format("Removing ban filter on %s uid %s", v[ "name" ], v[ "steamid" ] ) )
 				RunConsoleCommand("removeid", tostring( v[ "steamid" ] ) )
 			end
 			PAdmin:LoadMsg("Purging expired ban records.")
