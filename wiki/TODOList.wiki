@@ -12,7 +12,7 @@
   # *Optional:* Add ice block model to surround frozen player.
 
  *====cexec_sh.lua====
-  # Disable lua_run and other exploitative commands.
+  # ~~~Disable lua_run and other exploitative commands.~~~ (discarded)
 
  *====sethealth_sh.lua====
   # *Optional:* Add sounds/effects to make this better.
