@@ -22,7 +22,7 @@ elseif(SERVER)then
 			if( countries[ args[1] ] )then
 				country = countries[ args[1] ]
 			end
-			PAdmin:Notify( player.GetAll(), PAdmin.colors.neutral, "Welcome player ", ply, " from ", PAdmin.colors.purple, country )
+			PAdmin:Notify( player.GetAll(), PAdmin.colors.neutral, "Welcome player ", ply, " from ", PAdmin.colors.blue, country )
 		end
 	end)
 end
