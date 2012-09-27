@@ -1,6 +1,9 @@
 //  ___                             ___        
 //   | |_  _ _ . _   /\  _| _ . _    | _ _  _  
 //   | | )(-||||_)  /--\(_|||||| )   |(-(_||||
+
+PAdmin.Version = "1.0.0"
+
 /*
 	LPS Admin mod by TheLastPenguin
 	This admin mod is an opensource Administration tool for Gmod 13.
@@ -65,14 +68,21 @@ else
 	colBorder = Color( 255, 0, 0 )
 	colText = Color( 255, 155, 0 )
 end
+local white = Color(255,255,255,255)
 function PAdmin:LoadMsg( msg )
 	local len = math.Max( 1, 70 - string.len( msg ) )
 	MsgC(colBorder, "||" )
 	MsgC(colText, string.format( " %s%"..len.."s ", msg, "" ) )
 	MsgC(colBorder, "||\n")
+	if(SERVER)then -- fix issues for SRCDS making concommands blue and stuff.
+		MsgC(white,"")
+	end
 end
 function PAdmin:LoadMsgLN( )
 	MsgC( colBorder, "||========================================================================||\n" )
+	if(SERVER)then -- fix issues for SRCDS making concommands blue and stuff.
+		MsgC(white,"")
+	end
 end
 
 timer.Simple( 1, function()
@@ -113,7 +123,6 @@ Includes after this line
 
 -- Libraries First:
 shInclude("config.lua" )
-svInclude("lib/sourcebans.lua") -- Ban system. Not by me. Made by source bans team.
 shInclude("lib/player_sh.lua") -- genaric stuff library.
 shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- string library.
@@ -124,3 +133,34 @@ shInclude( "core/permissions_sh.lua" )
 shInclude( "core/commands_sh.lua" )
 -- Things with Dependencies Last
 shInclude("core/plugins_sh.lua")
+
+-- Menu System
+clInclude("menu/main.lua")
+clInclude("menu/skin.lua")
+
+/*========================================
+Force downloads of ALL PAdmin client files
+========================================*/
+if(SERVER)then
+	function PAdmin:ResourceAddDir(dir) // recursively adds everything in a directory to be downloaded by client
+		PAdmin:LoadMsg("Resources: Scanning Dir "..dir)
+		
+		local path
+		local files = file.Find("../"..dir.."/*",LUA_PATH)
+		print(files)
+		PrintTable(files)
+		for k,v in pairs() do
+			path = dir.."/"..v
+			PAdmin:LoadMsg( "Added file: "..path )
+			resource.AddFile(path)
+		end
+		
+		local list = file.FindDir("../"..dir.."/*",LUA_PATH)
+		for _, fdir in pairs(list) do
+			if fdir != ".svn" then // don't spam people with useless .svn folders
+				AddDir(fdir)
+			end
+		end
+	end
+	PAdmin:ResourceAddDir( "PAdmin/" )
+end

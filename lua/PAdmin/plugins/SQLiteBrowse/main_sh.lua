@@ -78,6 +78,7 @@ if(CLIENT)then
 		DermaPanel:SetDraggable( true )
 		DermaPanel:ShowCloseButton( true )
 		DermaPanel:MakePopup()
+		DermaPanel:SetSkin("PAdmin")
 		
 		local DBListView = vgui.Create("DListView",DermaPanel)
 		
@@ -142,6 +143,7 @@ if(CLIENT)then
 		DermaPanel:SetDraggable( true )
 		DermaPanel:ShowCloseButton( true )
 		DermaPanel:MakePopup()
+		DermaPanel:SetSkin("PAdmin")
 		
 		DBListView = vgui.Create("DListView",DermaPanel)
 		

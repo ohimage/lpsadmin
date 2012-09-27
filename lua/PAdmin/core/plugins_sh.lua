@@ -60,25 +60,25 @@ if(SERVER)then
 	local function ScanDirectory( dir )
 		local count = 0
 		-- scan for shared files.
-		for k,v in pairs( file.Find( dir.."*_sh.lua", "lsv" ) )do
+		for k,v in pairs( file.Find( dir.."*_sh.lua", LUA_PATH ) )do
 			count = count + 1
 			local n = dir..v
 			table.insert( svfiles, n )
 			table.insert( clfiles, n )
 		end
 		-- scan for client files.
-		for k,v in pairs( file.Find( dir.."*_cl.lua", "lsv" ) )do
+		for k,v in pairs( file.Find( dir.."*_cl.lua", LUA_PATH ) )do
 			count = count + 1
 			table.insert( clfiles, dir..v )
 		end
 		-- scan for server files.
-		for k,v in pairs( file.Find( dir.."*_sv.lua", "lsv" ) )do
+		for k,v in pairs( file.Find( dir.."*_sv.lua", LUA_PATH ) )do
 			count = count + 1
 			table.insert( svfiles, dir..v )
 		end
 		PAdmin:LoadMsg( string.format("Scanning Dir %s found %d files.",dir, count ) )
 		-- scan for other directories.
-		for k,v in pairs( file.FindDir( dir.."*", "lsv" ))do
+		for k,v in pairs( file.FindDir( dir.."*", LUA_PATH ))do
 			ScanDirectory( dir..v.."/" )
 		end
 	end
