@@ -112,6 +112,7 @@ if( SERVER )then
 	
 	-- registers a ban in the table. This is NOT the same as banning a user. It just makes the mod think
 	-- that the player is banned.
+	-- unban date is a time in minutes
 	function PAdmin:SaveBanInfo( steamid, admin_name, UnbanDate, reason )
 		UnbanDate = math.Round( UnbanDate )
 		if( not ( steamid and UnbanDate ) )then return end
@@ -141,7 +142,7 @@ if( SERVER )then
 			PAdmin:LoadMsg("Removing expired bans")
 			for k,v in pairs( res )do
 				PAdmin:LoadMsg( string.format("Removing ban filter on %s uid %s", v[ "name" ], v[ "steamid" ] ) )
-				RunConsoleCommand("removeid", tostring( v[ "steamid" ] ) )
+				game.ConsoleCommand("removeid "..tostring( v[ "steamid" ] ) )
 			end
 			PAdmin:LoadMsg("Purging expired ban records.")
 			sql.Query( "DELETE FROM PAdmin_Bans WHERE UnbanDate != '0' AND UnbanDate <= "..sql.SQLStr( math.Round( os.time() ) ) )

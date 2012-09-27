@@ -16,15 +16,12 @@
 local colors = {}
 PAdmin.colors = colors
 colors["white"] = Color( 255, 255, 255, 255 )
-colors["red"] = Color( 255, 0, 0, 255 )
-colors["green"] = Color( 0, 255, 0, 255 )
-colors["blue"] = Color( 0, 0, 255, 255 )
-colors["yellow"] = Color( 255, 255, 0, 255 )
-colors["cyan"] = Color( 0, 255, 255, 255 )
-colors["purple"] = Color( 255, 0, 255, 255 )
-colors["orange"] = Color( 255, 155, 0, 255 )
+colors["red"] = Color( 255, 127, 127, 255 )
+colors["green"] = Color( 63, 127, 0, 255 )
+colors["blue"] = Color( 127, 129, 255, 255)
+colors["yellow"] = Color( 255, 223, 127, 255 )
 
-colors["player"] = Color( 155, 0, 155, 255 )
+colors["player"] = Color( 127, 129, 255, 255)
 colors["neutral"] = Color( 255, 255, 255, 255 )
 colors["error"] = colors["red"]
 colors["warning"] = colors["yellow"]
@@ -32,7 +29,7 @@ colors["good"] = colors["green"]
 
 local schemes = {}
 function PAdmin:AddScheme( name, tbl )
-	schemes[ name ] = tbl
+	schemes[ name ] = tbl	
 end
 
 function PAdmin:GetScheme( name )

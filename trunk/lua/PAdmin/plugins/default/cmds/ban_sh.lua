@@ -2,7 +2,7 @@ local tbl = {}
 
 tbl.format = {
 	{PAdmin.types.PLY, "target" },
-	{PAdmin.types.TIME, "time"},
+	{PAdmin.types.TIME, "time", {"5m","30m","1h","12h","1d","1w","2w","0"}},
 	{PAdmin.types.STRING, "reason"},
 }
 

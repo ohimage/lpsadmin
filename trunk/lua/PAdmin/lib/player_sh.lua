@@ -11,43 +11,33 @@
 */
 
 if(SERVER)then
-	-- generally authing players.
-	local loading = {}
-	local validIDs = {}
-	local authedUsers = {}
-	-- check if user is authed.
-	timer.Create("PAdmin.LoadPlayers", 3, 0, function()
-		for k,v in pairs( loading )do
-			if( v and v:IsValid() and v:EntIndex() >= 0 )then
-				print("Checking if "..v:Name().." is authed and ready for data.")
-				if( string.len( v:Name() ) > 0 and not string.find( v:SteamID() , "PENDING" ))then
-					if( validIDs[ v:UniqueID() ] or v:IsBot())then
-						print("Player is authed and ready.")
-						validIDs[ v:UniqueID() ] = nil
-						v.PAdmin_Authed = true
-						loading[ k ] = nil
-						hook.Call("PAdmin_PlayerAuthed",GAMEMODE, v )
-					else
-						print("Player pending auth.")
-					end
-				end
-			else
-				loading[ k ] = nil
-			end
-		end
-	end)
-	
-	hook.Add("PlayerInitialSpawn","PAdmin.SettupData",function(ply)
-		loading[ ply:UserID() ] = ply
-		ply:SetNWInt( "GroupID", 1 )
-		ply:SetNWString( "UserGroup", "user" )
-	end)
 	
 	hook.Add("PlayerAuthed","PAdmin.Auth",function( ply, steamid, uniqueid )
 		if( ply )then
 			print("PAdmin: Recieved SteamID auth for "..ply:Nick()..".")
+			local banned = sql.Query( "SELECT * FROM PAdmin_Bans WHERE steamid = "..sql.SQLStr( ply:SteamID()))
+			if( banned )then
+				PAdmin:LoadMsg("Found user "..ply:Name().." is banned. Applying ban.")
+				PrintTable( banned[1] )
+				ply:Kick("Banned for "..(banned[1].reason or "Banned by Admin."))
+				return
+			end
+			ply.PAdmin_Authed = { ply:SteamID(), ply:UniqueID() }
+			
+			if( string.len( ply:Name() ) >= 2 )then
+				if( ply.PAdmin_Authed[ 1 ] == ply:SteamID() and ply.PAdmin_Authed[ 2 ] == ply:UniqueID() )then
+					PAdmin:LoadMsgLN()
+					PAdmin:LoadMsg(string.format("Player %s is authed by PAdmin.", ply:Name()))
+					hook.Call("PAdmin_PlayerAuthed",GAMEMODE, ply) -- this is called once user is ready for data and stuff.
+					ply:SetNWInt( "GroupID", 1 )
+					ply:SetNWString( "UserGroup", "user" )
+					ply.PAdmin_Authed = true
+				end
+			end
+			PAdmin:LoadUser( ply )
+		else
+			ply:Kick("Failed to auth user.")
 		end
-		validIDs[ uniqueid ] = true
 	end)
 	
 	hook.Add("PlayerConnect","PAdmin.PlayerJoin",function( name, addr )
@@ -95,9 +85,12 @@ function PAdmin:BanPlayer( ply, time, reason, admin)
 	else
 		target = tonumber( ply )
 	end
-	if( not ( admin and admin:IsValid() ) )then admin = '(Console' else admin = admin:Name() end
 	if( not reason )then reason = "<none>" end
 	print("Called save ban info.")
-	PAdmin:SaveBanInfo( target, admin, os.time() + time * 60, reason )
-	game.ConsoleCommand("banid 0 "..target.." 0")
+	PAdmin:SaveBanInfo( target, admin:Name(), os.time() + time * 60, reason )
+	for k,v in pairs(player.GetAll())do
+		if( v:SteamID() == ply:SteamID() )then
+			v:Kick("Banned "..reason..".")
+		end
+	end
 end
