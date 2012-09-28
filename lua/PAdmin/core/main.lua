@@ -138,29 +138,30 @@ shInclude("core/plugins_sh.lua")
 clInclude("menu/main.lua")
 clInclude("menu/skin.lua")
 
-/*========================================
-Force downloads of ALL PAdmin client files
-========================================*/
+/*=======================================
+Force downloads of ALL PAdmin resources.
+=======================================*/
 if(SERVER)then
 	function PAdmin:ResourceAddDir(dir) // recursively adds everything in a directory to be downloaded by client
-		PAdmin:LoadMsg("Resources: Scanning Dir "..dir)
-		
 		local path
-		local files = file.Find("../"..dir.."/*",LUA_PATH)
-		print(files)
-		PrintTable(files)
-		for k,v in pairs() do
-			path = dir.."/"..v
+		local files = file.Find(dir.."/*","GAME")
+		PAdmin:LoadMsg(string.format("Scanning Dir: %s found %d files.",dir, #files))
+		local dir = dir .. "/"
+		for k,v in pairs( files ) do
+			path = dir..v
 			PAdmin:LoadMsg( "Added file: "..path )
-			resource.AddFile(path)
+			//resource.AddFile(path)
 		end
 		
-		local list = file.FindDir("../"..dir.."/*",LUA_PATH)
-		for _, fdir in pairs(list) do
+		local l = file.FindDir(dir.."*","GAME")
+		for _, fdir in pairs(l) do
 			if fdir != ".svn" then // don't spam people with useless .svn folders
-				AddDir(fdir)
+				PAdmin:ResourceAddDir(dir..fdir)
 			end
 		end
 	end
-	PAdmin:ResourceAddDir( "PAdmin/" )
+	PAdmin:LoadMsgLN()
+	PAdmin:LoadMsg("Loading Resources.")
+	PAdmin:ResourceAddDir( "materials/PAdmin" )
+	PAdmin:LoadMsgLN()
 end
