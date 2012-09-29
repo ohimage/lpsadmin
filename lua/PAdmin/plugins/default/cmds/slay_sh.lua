@@ -3,7 +3,8 @@ tbl.format = {
 	{PAdmin.types.PLY, "target<ply>" }
 }
 tbl.perm = "PAdmin.slay"
-tbl.permdefault = true
+tbl.catagory = "Punishments"
+
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	local killmode

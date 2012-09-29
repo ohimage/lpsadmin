@@ -9,10 +9,10 @@ unfreeze.format = {
 }
 
 freeze.perm = "PAdmin.freeze"
-freeze.permdefault = true
+freeze.catagory = "User Managment"
 
 unfreeze.perm = "PAdmin.unfreeze"
-unfreeze.permdefault = true
+unfreeze.catagory = "User Managment"
 
 local soundlist = {
 	"physics/glass/glass_bottle_break1.wav",

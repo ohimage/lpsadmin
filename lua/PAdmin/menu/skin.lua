@@ -1,7 +1,7 @@
 -- Skin for DarkRP gui's
 SKIN = {}
 
-SKIN.PrintName          = "DarkRP"
+SKIN.PrintName          = "PAdmin_Skin"
 SKIN.Author             = "TheLastPenguin"
 SKIN.DermaVersion       = 1
 SKIN.GwenTexture		= Material("PAdmin/gwenskin/padmin_skin3.png")
@@ -236,5 +236,28 @@ SKIN.Colours.Category.LineAlt.Text_Selected		= GWEN.TextureColor( 4 + 8 * 24, 50
 SKIN.Colours.Category.LineAlt.Button			= GWEN.TextureColor( 4 + 8 * 25, 508 );
 SKIN.Colours.Category.LineAlt.Button_Hover		= GWEN.TextureColor( 4 + 8 * 24, 500 );
 SKIN.Colours.Category.LineAlt.Button_Selected	= GWEN.TextureColor( 4 + 8 * 25, 500 );
+
+/*function SKIN:PAdmin_CatagoryCollapse( panel )
+	
+end*/
+
+/*---------------------------------------------------------
+	CategoryHeader
+---------------------------------------------------------*/
+function SKIN:PaintCategoryHeader( panel )
+	draw.RoundedBox( 4, 0, 0, panel:GetWide(), panel:GetTall(), Color( 0, 200, 255 ) )
+end
+
+function SKIN:SchemeCategoryHeader( panel )
+	
+	panel:SetTextInset( 5 )
+	panel:SetFont( self.fontCategoryHeader )
+	
+	if ( panel:GetParent():GetExpanded() ) then
+		panel:SetTextColor( self.Colours.Category.Line.Text )
+	else
+		panel:SetTextColor( self.Colours.Category.Header_Closed	 )
+	end
+end
 
 derma.DefineSkin("PAdmin", "The official SKIN for DarkRP", SKIN)

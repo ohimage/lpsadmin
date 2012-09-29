@@ -73,14 +73,11 @@ you can add properties to the table like .icon
 */
 PAdmin:MenuAddTab("Home",function(panel, w, h)
 	local html = vgui.Create("DHTML", panel)
-	html:SetPos( 5, 5)
-	html:SetSize( w - 10, h - 10 )
+	html:SetPos( 5, 10 + 16)
+	local w2, h2 = w - 10, h - ( 10 + 16 )
+	html:SetSize( w2, h2 )
 	html:OpenURL("http://lastpenguin.com/ThemisAdmin/welcome.html")
 end,"Home").icon = "icon16/world.png"
-	
-PAdmin:MenuAddTab("Credits",function(panel, w, h)
-	
-end,"Change Log")
 
 function PAdmin:MenuGetTabs()
 	return tabs

@@ -4,7 +4,8 @@ tbl.format = {
 	{PAdmin.types.NUMBER, "damage<num>" }
 }
 tbl.perm = "PAdmin.slap"
-tbl.permdefault = true
+tbl.catagory = "Punishments"
+
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	local soundvar = 1

@@ -18,7 +18,8 @@ tbl.format = {
 	{PAdmin.types.STRING, "group name<str>" }
 }
 tbl.perm = "PAdmin.rank"
-tbl.permdefault = true
+tbl.catagory = "Groups and Ranks"
+
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayerByName( args[1] )
 	if(res)then

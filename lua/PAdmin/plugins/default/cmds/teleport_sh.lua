@@ -3,7 +3,7 @@ local tbl = {}
 tbl.format = {}
 
 tbl.perm = "PAdmin.teleport"
-tbl.permdefault = true
+tbl.catagory = "Teleportation"
 
 
 local function TeleportPlayer( ply_calling, ply_target )
