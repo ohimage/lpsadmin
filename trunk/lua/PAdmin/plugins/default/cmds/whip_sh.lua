@@ -5,7 +5,7 @@ tbl.format = {
 	{PAdmin.types.NUMBER, "times<num>" }
 }
 tbl.perm = "whip"
-tbl.permdefault = true
+tbl.catagory = "Punishments"
 
 local whiplist = {}
 local function whip( ply, dmg )

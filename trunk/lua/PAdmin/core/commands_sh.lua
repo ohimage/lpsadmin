@@ -21,6 +21,10 @@ PAdmin:LoadMsgLN()
 local cmdPrefix = '!'
 
 local commands = {}
+function PAdmin:GetAllCommands()
+	return commands
+end
+
 function PAdmin:RegisterCommand( name, tbl)
 	if( not tbl )then
 		ErrorNoHalt( "PAdmin: Cmd Register Error no Table Given!")

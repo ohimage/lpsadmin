@@ -6,7 +6,7 @@ tbl.format = {
 }
 
 tbl.perm = "PAdmin.cexec"
-tbl.permdefault = true
+tbl.catagory = "RCON"
 
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )

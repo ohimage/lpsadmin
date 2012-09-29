@@ -4,7 +4,8 @@ tbl.format = {
 	{PAdmin.types.NUMBER, "HP<num>" }
 }
 tbl.perm = "PAdmin.hp"
-tbl.permdefault = true
+tbl.catagory = "Fun"
+
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayersByName( args[1] )
 	for k,v in pairs( res )do

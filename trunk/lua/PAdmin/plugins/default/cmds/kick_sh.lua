@@ -5,7 +5,7 @@ tbl.format = {
 }
 
 tbl.perm = "PAdmin.kick"
-tbl.permdefault = true
+tbl.catagory = "User Managment"
 
 tbl.run = function( ply, args )
 	local res = PAdmin:FindPlayerByName( args[1] )

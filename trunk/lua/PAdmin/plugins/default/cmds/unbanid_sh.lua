@@ -6,7 +6,7 @@ tbl.format = {
 }
 
 tbl.perm = "PAdmin.ban"
-tbl.permdefault = true
+tbl.catagory = "User Managment"
 
 tbl.run = function( ply, args )
 	local id = args[1]
