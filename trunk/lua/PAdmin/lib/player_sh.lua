@@ -12,25 +12,46 @@
 
 if(SERVER)then
 	
+	function PAdmin:PlayerIsBanned( ply )
+		if( type( ply ) == "Player" )then ply = ply:SteamID() end
+		local banned = sql.Query( "SELECT * FROM PAdmin_Bans WHERE steamid = "..sql.SQLStr( ply))
+		if( banned )then
+			return banned
+		end
+		return nil
+	end
+	
+	hook.Add("PlayerInitialSpawn","PAdmin.BanCheck",function(ply)
+		-- first thing lets check if they're banned.
+		local banned = PAdmin:PlayerIsBanned( ply )
+		if( banned )then
+			PAdmin:LoadMsg("Found user "..ply:Name().." is banned. Applying ban.")
+			ply:Kick("Banned for "..(banned[1].reason or "Banned by Admin."))
+			return
+		end
+		-- next we set some default values.
+		ply:SetNWInt( "GroupID", 1 )
+		ply:SetNWString( "UserGroup", "user" )
+		
+		hook.Call("PAdmin_LoadPlayerData",GAMEMODE,ply)
+		hook.Call("PAdmin_PlayerLoaded",GAMEMODE, ply)
+		hook.Call("PAdmin_PostPlayerLoaded",GAMEMODE, ply)
+	end)
+	
 	hook.Add("PlayerAuthed","PAdmin.Auth",function( ply, steamid, uniqueid )
 		if( ply )then
-			print("PAdmin: Recieved SteamID auth for "..ply:Nick()..".")
-			local banned = sql.Query( "SELECT * FROM PAdmin_Bans WHERE steamid = "..sql.SQLStr( ply:SteamID()))
+			local banned = PAdmin:PlayerIsBanned( ply )
 			if( banned )then
 				PAdmin:LoadMsg("Found user "..ply:Name().." is banned. Applying ban.")
-				PrintTable( banned[1] )
 				ply:Kick("Banned for "..(banned[1].reason or "Banned by Admin."))
-				return
 			end
 			ply.PAdmin_Authed = { ply:SteamID(), ply:UniqueID() }
-			
 			if( string.len( ply:Name() ) >= 2 )then
 				if( ply.PAdmin_Authed[ 1 ] == ply:SteamID() and ply.PAdmin_Authed[ 2 ] == ply:UniqueID() )then
 					PAdmin:LoadMsgLN()
 					PAdmin:LoadMsg(string.format("Player %s is authed by PAdmin.", ply:Name()))
-					hook.Call("PAdmin_PlayerAuthed",GAMEMODE, ply) -- this is called once user is ready for data and stuff.
-					ply:SetNWInt( "GroupID", 1 )
-					ply:SetNWString( "UserGroup", "user" )
+					 -- this is called once user is ready for data and stuff.
+					
 					ply.PAdmin_Authed = true
 				end
 			end

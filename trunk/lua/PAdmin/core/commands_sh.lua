@@ -42,6 +42,8 @@ function PAdmin:RegisterCommand( name, tbl)
 		ErrorNoHalt( "PAdmin: Cmd Register Error Table has no perm property.")
 		return
 	end
+	table.insert(PAdmin.permissions, tbl.perm )
+	
 	PAdmin:LoadMsg("Registered Command: "..name)
 	name = string.lower( name )
 	commands[ name ] = tbl
@@ -135,7 +137,13 @@ if(SERVER)then
 				PAdmin:Notice( ply, PAdmin.colors.error, string.format("You dont have permission %s.", cmd.perm ))
 				return
 			end
-			if( not ( #args >= #(cmd.format)))then
+			local ArgRequirement = 0
+			for i = 1, #cmd.format do
+				if( not cmd.format[ i ]["optional"] )then
+					ArgRequirement = ArgRequirement + 1
+				end
+			end
+			if( not ( #args >= ArgRequirement))then
 				PAdmin:Notice( ply, PAdmin.colors.error, "Not enough arguements! Expected "..tostring( #(cmd.format) )," got " .. #args)
 				local msg = {}
 				table.insert( msg, PAdmin.colors.error )

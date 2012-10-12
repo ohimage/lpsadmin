@@ -23,6 +23,7 @@ function PAdmin:WriteFile( path, data )
 	if( not string.find( path, ".txt") )then
 		path = path .. ".txt"
 	end
+	print("wrote file at path "..path)
 	file.Write( path, data )
 end
 function PAdmin:ReadFile( path )

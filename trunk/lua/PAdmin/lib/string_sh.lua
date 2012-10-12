@@ -69,7 +69,7 @@ argTypeChecks[ PAdmin.types.PLY ] = function( arg )
 		return true
 	end
 	for k,v in pairs( player.GetAll())do 
-		if( string.find( string.lower( v:Nick() ), string.lower( arg ) ) )then
+		if( name == arg or string.find( string.lower( v:Name() ), string.lower( arg ) ) )then
 			return true
 		end
 	end

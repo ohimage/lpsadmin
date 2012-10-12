@@ -108,7 +108,7 @@ Sending Clientside Datapack.
 
 if(SERVER)then
 	util.AddNetworkString( "PAdmin.SendCLFileList" )
-	hook.Add("PAdmin_PlayerAuthed","PAdmin.SendCLFiles",function( ply )
+	hook.Add("PAdmin_PlayerLoaded","PAdmin.SendCLFiles",function( ply )
 		PAdmin:LoadMsgLN()
 		PAdmin:LoadMsg("Sending Plugin List to "..ply:Name()..".")
 		net.Start( "PAdmin.SendCLFileList" )

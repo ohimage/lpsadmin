@@ -1,7 +1,8 @@
 local tbl = {}
 
 tbl.format = {
-	{PAdmin.types.PLY, "target<ply>"}
+	{PAdmin.types.PLY, "target<ply>"},
+	{PAdmin.types.STRING, "[reason]", ["optional"] = true }
 }
 
 tbl.perm = "PAdmin.kick"

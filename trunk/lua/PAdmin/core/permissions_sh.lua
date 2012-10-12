@@ -14,6 +14,9 @@
 Permissions system to check if players can do stuff.
 =====================================*/
 
+-- a table of possible permissions.
+PAdmin.permissions = {}
+
 -- settup data system
 PAdmin:CheckDir( "PAdmin/groups")
 
@@ -73,11 +76,9 @@ function Group_MT:GetImmunity()
 end
 function Group_MT:AddPermission( perm )
 	self._permissions[ perm ] = true
-	PAdmin:SyncPermission( self:GetID(), perm, true, player.GetAll() )
 end
 function Group_MT:RemovePermission( perm )
 	self._permissions[ perm ] = nil
-	PAdmin:SyncPermission( self:GetID(), perm, false, player.GetAll() )
 end
 function Group_MT:HasPermission( perm )
 	return self._permissions[ perm ] == true
@@ -142,24 +143,23 @@ if(SERVER)then
 		local groupsFile = PAdmin:ReadFile( "groups/custom" )
 		if( not groupsFile ) then
 			PAdmin:LoadMsg("Custom Groups file not found.")
-			if( not groupsFile) then
-				local saveData = {}
-				local groupOwner = Group:New( 2 )
-				groupOwner:SetTitle( "owner" )
-				groupOwner:SetColor( Color( 0, 255, 255, 255 ) )
-				groupOwner:SetImmunity( 100 )
-				groupOwner:AddPermission( "*" )
-				table.insert( saveData, groupOwner:ToTable() )
-				local groupUser = Group:New( 1 )
-				groupUser:SetTitle( "guest" )
-				groupUser:SetColor( Color( 200, 200, 200, 255 ) )
-				groupUser:SetImmunity( 1 )
-				groupUser:AddPermission( "PAdmin.chat" )
-				groupUser:AddPermission( "PAdmin.voicechat" )
-				table.insert( saveData, groupUser:ToTable() )
-				groupsFile = glon.encode( saveData )
-				PAdmin:WriteFile( "groups/custom" , groupsFile )
-			end
+			local saveData = {}
+			local groupOwner = Group:New( 2 )
+			groupOwner:SetTitle( "owner" )
+			groupOwner:SetColor( Color( 0, 255, 255, 255 ) )
+			groupOwner:SetImmunity( 100 )
+			groupOwner:AddPermission( "*" )
+			table.insert( saveData, groupOwner:ToTable() )
+			local groupUser = Group:New( 1 )
+			groupUser:SetTitle( "guest" )
+			groupUser:SetColor( Color( 200, 200, 200, 255 ) )
+			groupUser:SetImmunity( 1 )
+			groupUser:AddPermission( "PAdmin.chat" )
+			groupUser:AddPermission( "PAdmin.voicechat" )
+			table.insert( saveData, groupUser:ToTable() )
+			groupsFile = glon.encode( saveData )
+			PAdmin:WriteFile( "groups/custom.txt" , groupsFile )
+			print(groupsFile)
 		end
 		local allGroups = glon.decode( groupsFile )
 		for k,v in pairs( allGroups )do
@@ -238,6 +238,11 @@ if(SERVER)then
 			net.Broadcast()
 		end
 	end
+	hook.Add("PAdmin_PostPlayerLoaded","PAdmin.SendGroups",function( ply )
+		for k,v in pairs( groups )do
+			PAdmin:SendGroupData( v, ply )
+		end
+	end)
 else
 	net.Receive( "PAdmin.SendPerm", function(length)
 		local id = net.ReadInt( 4 )
