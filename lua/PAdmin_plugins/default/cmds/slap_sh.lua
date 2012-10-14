@@ -6,15 +6,15 @@ tbl.format = {
 tbl.perm = "PAdmin.slap"
 tbl.catagory = "Punishments"
 
-tbl.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
+tbl.run = function( ply, name, damage )
+	local res = PAdmin:FindPlayersByName( name )
 	local soundvar = 1
 	for k,v in pairs( res )do
 		soundvar = math.Round(math.Rand(1, 6))
-		v:TakeDamage( tonumber( args[2] ), ply, ply)
+		v:TakeDamage( tonumber( damage ), ply, ply)
 		v:SetVelocity( Vector( math.random( -200, 200 ), math.random( -200, 200 ), math.random( 100, 600 ) )) 
 		v:EmitSound( "physics/body/body_medium_impact_hard"..soundvar..".wav", 100, 100 )
 	end
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " slapped ", PAdmin:FormatPlayerTable( res ), " with ", args[2] , " damage." )
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " slapped ", PAdmin:FormatPlayerTable( res ), " with ", damage , " damage." )
 end
 PAdmin:RegisterCommand( "slap" , tbl )

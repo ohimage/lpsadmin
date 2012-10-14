@@ -82,12 +82,14 @@ local function AutoComplete( str )
 		table.insert( help, v[2] )
 	end
 	
-	if( commands[ cmd ] and LocalPlayer():HasPermission( commands[ cmd ].perm ) )then
+	if( cmdtbl and LocalPlayer():HasPermission( commands[ cmd ].perm ) )then
 		local args = table.Copy( tocans )
 		table.remove( args, 1 )
 		local curArg = args[#args]
 		if( cmdtbl["AutoComplete_".. #args ] )then -- allows commands to have their own autocomplete generators
-			return cmdtbl["AutoComplete_".. #args ]()
+			return cmdtbl["AutoComplete_".. #args ]( curArg )
+		elseif( cmdtbl["AutoComplete"] )then
+			return cmdtbl["AutoComplete"]( #args, curArg )
 		else
 			local f = cmdtbl.format[ #args ]
 			if( f )then
@@ -170,7 +172,7 @@ if(SERVER)then
 					break
 				end
 			end
-			local status, errmsg = pcall( cmd.run, ply, args )
+			local status, errmsg = pcall( cmd.run, ply, unpack( args ) )
 			if( not status and errmsg )then
 				print(string.format( "PAdmin: Plugin.run failed on command %s. Error Dump: ", cmd))
 				PrintTable( args )

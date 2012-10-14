@@ -32,7 +32,7 @@ end
 function Group:New( id )
 	local new = {}
 	setmetatable( new, Group )
-	new._title = title
+	new._title = "NewGroup"
 	new._color = Color( 255, 255, 255, 255 )
 	new._immunity = 0
 	new._permissions = {}
