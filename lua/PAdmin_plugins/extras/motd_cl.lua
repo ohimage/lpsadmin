@@ -1,6 +1,6 @@
 local CFG = {}
-CFG["URL"] = "http://lastpenguin.com/"
-CFG["time"] = 10 -- how long they are forced to read the page for.
+CFG.URL = "http://lastpenguin.com/"
+CFG.time = 15 -- how long they are forced to read the page for.
 
 local w, h = ScrW() * 0.8, ScrH() * 0.8
 local Frame = vgui.Create( "DFrame" )
@@ -33,7 +33,7 @@ local CloseButton = vgui.Create( "DButton", Frame )
 	end
 
 concommand.Add("PAdmin_MOTD",function()
-	time = RealTime() + 10
+	time = RealTime() + CFG.time
 	
 	hook.Add("Think","UpdateButtonText",function()
 		local delay = nil
@@ -42,7 +42,7 @@ concommand.Add("PAdmin_MOTD",function()
 			CloseButton:SetText("Close")
 			CloseButton:SetEnabled( true )
 		else
-			CloseButton:SetText("Wait "..(math.floor( time - RealTime() )+1) )
+			CloseButton:SetText("Please wait "..(math.floor( time - RealTime() )+1) .." seconds." )
 		end
 	end)
 end)
