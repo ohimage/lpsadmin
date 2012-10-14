@@ -1,12 +1,13 @@
 local tbl = {}
 tbl.format = {
 	{PAdmin.types.PLY, "target<ply>" }
+	{PAdmin.types.STRING, "killmode<enum>", {"explode","none"}}
 }
 tbl.perm = "PAdmin.slay"
 tbl.catagory = "Punishments"
 
-tbl.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
+tbl.run = function( ply, name )
+	local res = PAdmin:FindPlayersByName( name )
 	local killmode
 	if args[2] then
 		killmode = args[2]

@@ -8,17 +8,16 @@ tbl.format = {
 tbl.perm = "PAdmin.kick"
 tbl.catagory = "User Managment"
 
-tbl.run = function( ply, args )
+tbl.run = function( ply, name, ... )
 	local res = PAdmin:FindPlayerByName( args[1] )
 	if( not res )then
 		PAdmin:Notify( ply, PAdmin.colors.error, "No targets found!")
 		return
 	end
 	
-	table.remove( args, 1 )
 	local reason
-	if( #args > 1 )then
-		reason = table.concat( args, " " )
+	if( #arg > 1 )then
+		reason = table.concat( arg, " " )
 	else
 		reason = "Kicked by Admin"
 	end

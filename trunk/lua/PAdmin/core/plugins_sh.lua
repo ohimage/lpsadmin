@@ -83,7 +83,7 @@ if(SERVER)then
 			ScanDirectory( dir..v.."/" )
 		end
 	end
-	ScanDirectory("PAdmin/plugins/")
+	ScanDirectory("PAdmin_plugins/")
 	
 	-- processing serverside files.
 	PAdmin:LoadMsgLN()

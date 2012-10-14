@@ -26,8 +26,8 @@ local soundlist = {
 	"physics/glass/glass_pottery_break4.wav"
 }
 
-freeze.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
+freeze.run = function( ply, name )
+	local res = PAdmin:FindPlayersByName( name )
 	local rand = 0
 	for k, v in pairs( res ) do
 		rand = math.random( 1, #soundlist )
@@ -39,8 +39,8 @@ freeze.run = function( ply, args )
 	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, PAdmin.colors.good, " froze ", PAdmin.colors.neutral, PAdmin:FormatPlayerTable( res ), "." )
 end
 
-unfreeze.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
+unfreeze.run = function( ply, name )
+	local res = PAdmin:FindPlayersByName( name )
 	for k, v in pairs( res ) do
 		v:Freeze( false )
 		v:UnLock()

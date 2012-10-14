@@ -1,22 +1,27 @@
 local god = {}
 god.format = {
-	{PAdmin.types.PLY, "target<ply>" }
+	{PAdmin.types.PLY, "target<ply>" },
+	{PAdmin.types.BOOL, "toggle<bool>", ["optional"] = true },
 }
 god.perm = "PAdmin.god"
 god.catagory = "Fun"
 
-god.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
+god.run = function( ply, name, toggle)
+	local res = PAdmin:FindPlayersByName( name )
 	local goded = {}
 	local ungoded = {}
+	local tog = false
+	if( toggle and PAdmin:StringToBoolean( toggle ))then
+		tog = true
+	end
 	for k,v in pairs( res )do
-		if(v.PA_Goded)then
+		if(tog and v.PA_Goded)then
 			if( ply:HasPermission("PAdmin.ungod"))then
 				v:GodDisable()
 				v.PA_Goded = nil
 				table.insert(ungoded, v )
 			end
-		else
+		elseif( not v.PA_Goded )then
 			v:GodEnable()
 			v.PA_Goded = true
 			table.insert(goded, v )

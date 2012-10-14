@@ -9,10 +9,9 @@ tbl.format = {
 tbl.perm = "PAdmin.ban"
 tbl.catagory = "User Managment"
 
-tbl.run = function( ply, args )
-	local id = args[1]
-	local time = PAdmin:TimeToMinutes( args[2] )
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " banned ", id, " for ", args[2], " ( "..time..") minutes Reason: ", PAdmin.colors.yellow, args[3] )
+tbl.run = function( ply, id, time_str )
+	local time = PAdmin:TimeToMinutes( time_str )
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " banned ", id, " for ", time_str, " ( "..time..") minutes Reason: ", PAdmin.colors.yellow, args[3] )
 	PAdmin:BanPlayer( args[1], time, args[3], ply)
 end
 

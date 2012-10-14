@@ -176,10 +176,10 @@ SKIN.Colours.Window.TitleActive			= GWEN.TextureColor( 4 + 8 * 0, 508 );
 SKIN.Colours.Window.TitleInactive		= GWEN.TextureColor( 4 + 8 * 1, 508 );
 
 SKIN.Colours.Button = {}
-SKIN.Colours.Button.Normal				= GWEN.TextureColor( 4 + 8 * 2, 508 );
-SKIN.Colours.Button.Hover				= GWEN.TextureColor( 4 + 8 * 3, 508 );
-SKIN.Colours.Button.Down				= GWEN.TextureColor( 4 + 8 * 2, 500 );
-SKIN.Colours.Button.Disabled			= GWEN.TextureColor( 4 + 8 * 3, 500 );
+SKIN.Colours.Button.Normal				= Color( 55, 55, 55, 255 );
+SKIN.Colours.Button.Hover				= Color( 75, 75, 150, 255 );
+SKIN.Colours.Button.Down				= Color( 255, 255, 255, 255 );
+SKIN.Colours.Button.Disabled			= Color( 100, 100, 100, 255 );
 
 SKIN.Colours.Tab = {}
 SKIN.Colours.Tab.Active = {}
@@ -195,10 +195,10 @@ SKIN.Colours.Tab.Inactive.Down			= GWEN.TextureColor( 4 + 8 * 6, 500 );
 SKIN.Colours.Tab.Inactive.Disabled		= GWEN.TextureColor( 4 + 8 * 7, 500 );
 
 SKIN.Colours.Label = {}
-SKIN.Colours.Label.Default				= GWEN.TextureColor( 4 + 8 * 8, 508 );
-SKIN.Colours.Label.Bright				= GWEN.TextureColor( 4 + 8 * 9, 508 );
-SKIN.Colours.Label.Dark					= GWEN.TextureColor( 4 + 8 * 8, 500 );
-SKIN.Colours.Label.Highlight			= GWEN.TextureColor( 4 + 8 * 9, 500 );
+SKIN.Colours.Label.Default				= Color( 50, 50, 100, 255 );
+SKIN.Colours.Label.Bright				= Color(230,230,230,255);
+SKIN.Colours.Label.Dark					= Color( 30, 30, 30, 255 );
+SKIN.Colours.Label.Highlight			= Color( 0, 150, 150, 255 );
 
 SKIN.Colours.Tree = {}
 SKIN.Colours.Tree.Lines					= GWEN.TextureColor( 4 + 8 * 10, 508 );		---- !!!

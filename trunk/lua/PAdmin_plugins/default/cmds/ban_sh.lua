@@ -9,16 +9,17 @@ tbl.format = {
 tbl.perm = "PAdmin.ban"
 tbl.catagory = "User Managment"
 
-tbl.run = function( ply, args )
-	local targ = PAdmin:FindPlayerByName( args[1] )
+tbl.run = function( ply, name, time_str, reason )
+	local targ = PAdmin:FindPlayerByName( name )
 	if( not targ )then
 		PAdmin:Notify(ply, PAdmin.colors.error, "Player not found." )
 		return
 	end
-	print("Started to look at the time.")
-	local time = PAdmin:TimeToMinutes( args[2] )
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " banned ", targ, " for ", args[2], " ( "..time..") minutes Reason: ", PAdmin.colors.yellow, args[3] )
-	print("Past the time.")
+	if( not reason )then
+		reason = "(Banned by admin.)"
+	end
+	local time = PAdmin:TimeToMinutes( time_str )
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " banned ", targ, " for ", time_str, " ( "..time..") minutes Reason: ", PAdmin.colors.yellow, reason )
 	PAdmin:BanPlayer( targ, time, args[3], ply)
 end
 

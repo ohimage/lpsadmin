@@ -170,5 +170,6 @@ if(SERVER)then
 	PAdmin:LoadMsgLN()
 	PAdmin:LoadMsg("Loading Resources.")
 	PAdmin:ResourceAddDir( "materials/PAdmin" )
+	resource.AddFile("materials/PAdmin/gwenskin/padmin_skin3.png")
 	PAdmin:LoadMsgLN()
 end

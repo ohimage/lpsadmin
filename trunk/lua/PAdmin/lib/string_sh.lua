@@ -45,9 +45,10 @@ print( "Time Converter test: ".. PAdmin:TimeToMinutes( "1w2d" ) )
 PAdmin.types = {}
 PAdmin.types.STEAMID = 1
 PAdmin.types.STRING = 2
-PAdmin.types.PLY = 3
-PAdmin.types.NUMBER = 4
-PAdmin.types.TIME = 5
+PAdmin.types.PLY = 4
+PAdmin.types.NUMBER = 8
+PAdmin.types.TIME = 16
+PAdmin.types.BOOL = 32
 local argTypeChecks = {}
 argTypeChecks[ PAdmin.types.STEAMID ] = function( arg )
 	local res = string.match( arg, "STEAM_[0-5]:[0-9]:[0-9]+" )
@@ -94,6 +95,15 @@ argTypeChecks[ PAdmin.types.TIME ] = function( arg )
 	else
 		return false
 	end
+end
+argTypeChecks[ PAdmin.types.BOOL ] = function( arg )
+	if( string.len( arg ) >= 1 )then
+		local char = string.lower( arg[1] )
+		if( char == 't' or char == 'f' or char == 'y' or char == 'n' )then
+			return true
+		end
+	end
+	return false
 end
 
 -- checks the type of the input
@@ -178,4 +188,15 @@ function PAdmin:ParseCommandString( args )
 		end
 	end
 	return res
+end
+
+-- gets the boolean value of the string.
+function PAdmin:StringToBoolean( str )
+	if( string.len( str ) >= 1 )then
+		local char = string.lower( str[1] )
+		if( char == 't' or char == 'y' )then
+			return true
+		end
+	end
+		return false
 end

@@ -20,24 +20,23 @@ tbl.format = {
 tbl.perm = "PAdmin.rank"
 tbl.catagory = "Groups and Ranks"
 
-tbl.run = function( ply, args )
-	local res = PAdmin:FindPlayerByName( args[1] )
+tbl.run = function( ply, name, rank)
+	local res = PAdmin:FindPlayerByName( name )
 	if(res)then
-		if(PAdmin:GetGroupByID( tonumber( args[2] ) ))then
-			local val = args[2]
-			PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " set ", res, "'s rank to ",PAdmin.colors.purple, args[2] )
-			if( type( val ) == "string" )then
-				for k,v in pairs( PAdmin:GetAllGroups() )do
-					if( v:GetTitle() == val )then
-						res:SetUserGroup( val )
-						PAdmin:SavePlayerGroup( res )
-						break
-					end
+		local val = rank
+		if( type( val ) == "string" )then
+			for k,v in pairs( PAdmin:GetAllGroups() )do
+				if( v:GetTitle() == val )then
+					res:SetUserGroup( val )
+					PAdmin:SavePlayerGroup( res )
+					PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " set ", res, "'s rank to ",PAdmin.colors.purple, rank )
+					return
 				end
 			end
+			PAdmin:Notice( ply, PAdmin.colors.error, "Rank ", rank, " not found!" )
 		end
 	else
-		PAdmin:Notify(ply, PAdmin.colors.error )
+		PAdmin:Notify(ply, PAdmin.colors.error, "Player ", name," not found." )
 	end
 end
 PAdmin:RegisterCommand( "rank" , tbl )
