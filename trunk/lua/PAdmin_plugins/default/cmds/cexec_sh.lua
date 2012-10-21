@@ -9,8 +9,8 @@ tbl.perm = "PAdmin.cexec"
 tbl.catagory = "RCON"
 
 tbl.run = function( ply, name, ... )
-	local res = PAdmin:FindPlayersByName( args[1] )
-	table.remove( args, 1 )
+	local res = PAdmin:FindPlayersByName( name )
+	local arg = { ... }
 	local command = table.concat( arg, " " )
 	--[[Add command filters here]]--
 	

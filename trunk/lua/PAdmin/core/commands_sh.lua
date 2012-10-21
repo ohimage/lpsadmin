@@ -129,12 +129,12 @@ local ConCmdParse
 if(SERVER)then
 	-- the actual parsing of the commands
 	local function parse( ply, args )
-		local cmd = args[1]
-		cmd = string.lower( cmd )
+		local command = args[1]
+		command = string.lower( command )
 		table.remove( args, 1 )
-		if( commands[ cmd ] and args)then -- check its a valid command
-			print( string.format("Command %s was found!",cmd ) )
-			local cmd = commands[ cmd ]
+		if( commands[ command ] and args)then -- check its a valid command
+			print( string.format("Command %s was found!",command ) )
+			local cmd = commands[ command ]
 			if( not ply:HasPermission( cmd.perm ) )then
 				PAdmin:Notice( ply, PAdmin.colors.error, string.format("You dont have permission %s.", cmd.perm ))
 				return
@@ -174,7 +174,7 @@ if(SERVER)then
 			end
 			local status, errmsg = pcall( cmd.run, ply, unpack( args ) )
 			if( not status and errmsg )then
-				print(string.format( "PAdmin: Plugin.run failed on command %s. Error Dump: ", cmd))
+				print(string.format( "PAdmin: Plugin.run failed on command %s. Error Dump: ", command))
 				PrintTable( args )
 				ErrorNoHalt( errmsg )
 			end

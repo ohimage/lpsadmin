@@ -20,7 +20,7 @@ tbl.run = function( ply, name, time_str, reason )
 	end
 	local time = PAdmin:TimeToMinutes( time_str )
 	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " banned ", targ, " for ", time_str, " ( "..time..") minutes Reason: ", PAdmin.colors.yellow, reason )
-	PAdmin:BanPlayer( targ, time, args[3], ply)
+	PAdmin:BanPlayer( targ, time, reason, ply)
 end
 
 PAdmin:RegisterCommand( "ban", tbl )

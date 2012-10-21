@@ -28,13 +28,13 @@ end
 
 timer.Create("PAdmin.p.dowhip",1,0, whip )
 
-tbl.run = function( ply, args )
-	local res = PAdmin:FindPlayersByName( args[1] )
-	local dmg = tonumber( args[2] )
-	local times = tonumber( args[3] )
+tbl.run = function( ply, name, damage, times )
+	local res = PAdmin:FindPlayersByName( name )
+	local dmg = tonumber( damage )
+	local times = tonumber( times )
 	for k,v in pairs( res )do
 		whiplist[ v ] = { dmg, times }
 	end
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " whipped ", PAdmin:FormatPlayerTable( res ), " with ", args[2] , " damage ", args[3], " times." )
+	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " whipped ", PAdmin:FormatPlayerTable( res ), " with ", damage , " damage ", times, " times." )
 end
 PAdmin:RegisterCommand( "whip" , tbl )

@@ -33,7 +33,8 @@ local function TeleportSelf( ply )
 	ply:SetLocalVelocity( Vector(0, 0, 0) )
 end
 
-tbl.run = function( ply, args )
+tbl.run = function( ply, ... )
+	local args = { ... }
 	-- check validity of calling player
 	if not ply:IsValid() or not ply:Alive() then return end
 	local targetply

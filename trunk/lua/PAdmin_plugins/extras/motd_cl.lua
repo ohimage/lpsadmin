@@ -27,7 +27,7 @@ local CloseButton = vgui.Create( "DButton", Frame )
 	CloseButton:SetPos( 5, h - 40 )
 	CloseButton:SetText( "Close" )
 	CloseButton.DoClick = function( button )
-		if( time <= RealTime() )then
+		if( time <= RealTime() or LocalPlayer():IsSuperAdmin() )then
 			Frame:Close()
 		end
 	end

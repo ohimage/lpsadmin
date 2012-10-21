@@ -9,7 +9,8 @@ tbl.perm = "PAdmin.kick"
 tbl.catagory = "User Managment"
 
 tbl.run = function( ply, name, ... )
-	local res = PAdmin:FindPlayerByName( args[1] )
+	local res = PAdmin:FindPlayerByName( name )
+	local arg = { ... }
 	if( not res )then
 		PAdmin:Notify( ply, PAdmin.colors.error, "No targets found!")
 		return
