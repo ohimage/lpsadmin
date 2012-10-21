@@ -11,6 +11,9 @@
 		You may use calls to PAdmin's libraries if a seperate installation of PAdmin is listed as a requirement.
 */
 
+
+-- THIS NEEDS ALOT OF WORK STILL
+
 local groups = PAdmin:GetAllGroups()
 
 local tbl = {}

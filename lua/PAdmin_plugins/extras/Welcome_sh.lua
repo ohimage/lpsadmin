@@ -13,7 +13,7 @@ elseif(SERVER)then
 		["KR"]="Korea",
 		["NZ"]="New Zeland",
 	}
-	local tbl = {}
+	local tbl = {} 
 	concommand.Add("PA_Welcome",function( ply, cmd, args )
 		if( not args[1] )then return end
 		if( not table.HasValue( tbl, ply:UserID() ))then

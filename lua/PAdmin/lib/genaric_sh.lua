@@ -2,7 +2,12 @@ if( SERVER )then
 	util.AddNetworkString( "PAdmin.ChatPrint" )
 	-- both are the same, its just a matter of preference.
 	function PAdmin:Notice( ply, ... )
+		local arg = { ... }
 		if( not ply )then return end
+		if( not arg )then
+			print("Notify: arg is nil. Return end")
+			return
+		end
 		if( type( ply ) == "player" )then
 			print("Ply is a player!")
 			if( ply:EntIndex() < 0 )then

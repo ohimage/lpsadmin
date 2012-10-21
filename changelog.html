@@ -1,120 +1,14 @@
-<html>
-	<head>
-		<title>PAdmin Changelog</title>
-		<style type="text/css">
-			body {
-				background-color: #36c;
-				font-family: sans-serif;
-			}
-			
-			#wrapper {
-				position: absolute;
-				left: 50%;
-				top: 0;
-				width: 1200px;
-				min-height: 715px;
-				margin-left: -630px;
-				padding: 30px;
-				background-image: url(http://glua.me/bg.png);
-				
-				-webkit-box-shadow: inset 0 0 80px 0 #000;
-			}
-			
-			#content {
-				background-color: rgba(255,255,255,0.2);
-				padding: 20px;
-			}
-			input.btn {
-				color: #000;
-				background-color: white;
-				border: 1px solid black;
-			}
-			
-			input.btn:hover {
-				cursor: pointer;
-				background-color: #ccc;
-			}
-			
-			#content input {
-				display: block;
-			}
-			
-			#content h4 {
-				text-decoration: underline;
-			}
-			
-			h4 {
-				padding: 0;
-				margin: 0;
-			}
-		</style>
-		
-		<script type="text/javascript">
-			function showSpoiler(obj, node) {
-				var i, count = 0;
-				var divs = new Array();
-				for (i = 0; i < obj.parentNode.childNodes.length; i++) {
-					var id = obj.parentNode.childNodes[i].id;
-					if (id == "inner") {
-						
-						count++;
-						divs[count] = obj.parentNode.childNodes[i];
-					}
-				}
-				for (i = 1; i < count+1; i++ ) {
-					if (i == node) {
-						var inner = divs[i];
-						if (inner.style.display == "none")
-							inner.style.display = "";
-						else
-							inner.style.display = "none";
-					}
-				}
-			}
-		</script>
-	</head>
-	<body>
-		<div id="wrapper">
-			<div id="content">
-				<h1><center>LPS Admin Mod ChangeLog</center></h1>
-				<h3><center>Version 0.0.1</center></h3>
-				<!--
-					The following format should be used to add a new update. (text inside of * * will be used as variables)
-					
-					<h4>*Title*</h4>
-					<input type="button" onclick="showSpoiler(this, *Number*);" value="Show/Hide" class="btn"/>
-					<div id="inner" style="display:none;>
-						<li>*Update Information* -- *Name*</li>
-						<li>*Second Update Information* -- *Name*</li>
-					</div>
-				-->
-				<h4>Update v0.1.1</h4>
-				<input type="button" onclick="showSpoiler(this, 1);" value="Show/Hide" class="btn"/>
-				<div id="inner" style="display:none;">
-					<li>Fixed issues with plugin - cmd_whip_sh.lua -- Trip</li>
-					<li>Fixed issues with plugin - cmd_sethealth_sh.lua -- Trip</li>
-					<li>Added sounds to plugin - cmd_whip_sh.lua -- Trip</li>
-					<li>Added sounds to plugin - cmd_slap_sh.lua -- Trip</li>
-					<li>Added plugin - cmd_teleport_sh.lua -- Trip</li>
-					<li>Added plugin - cmd_freeze_sh.lua -- Trip</li>
-				</div>
-				<h4>Update v0.1.0</h4>
-				<input type="button" onclick="showSpoiler(this, 2);" value="Show/Hide" class="btn"/>
-				<div id="inner" style="display:none;">
-					<li>Set up string formatting. -- TheLastPenguin</li>
-					<li>Created plugin system. -- TheLastPenguin</li>
-					<li>Added plugin - cmd_slay_sh.lua -- TheLastPenguin</li>
-					<li>Added plugin - cmd_slap_sh.lua -- TheLastPenguin</li>
-					<li>Added plugin - cmd_whip_sh.lua -- TheLastPenguin</li>
-					<li>Added plugin - cmd_sethealth_sh.lua -- TheLastPenguin</li>
-				</div>
-				<h4>Update v0.0.1</h4>
-				<input type="button" onclick="showSpoiler(this, 3);" value="Show/Hide" class="btn"/>
-				<div id="inner" style="display:none;">
-					<li>Created the mod skeleton. -- TheLastPenguin</li>
-					<li>Designed plugin system. -- TheLastPenguin</li>
-				</div>
-			</div>
-		</div>
-	</body>
-</html>
+<header>
+	<title>PAdmin Change Log</title>
+</header>
+
+<script>
+var changes = new Array();
+changes[0] = new Array();
+changes[0][1] = "Created this change log.";
+changes[0][2] = "Started work on buttons to show change info.";
+
+changes[1] = new Array();
+changes[1][0] = "Changed plugin directory from PAdmin/plugins to PAdmin_plugins";
+changes[1][1] = "Changed plugin format to pass arguements as function paramaters rather than as a table.";
+</script>
