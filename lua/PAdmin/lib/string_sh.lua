@@ -144,26 +144,33 @@ function PAdmin:FindPlayerByName( name )
 	end
 end
 
+
+function PAdmin:FormatPlayerName( ply )
+	if( player.IsConsole( ply ) )then
+		return { PAdmin.colors["console"], "(CONSOLE)" }
+	else
+		local gtbl = ply:GetUserGroupTbl()
+		local prefix = ""
+		if( gtbl:GetID() ~= 1 )then
+			prefix = "["..ply:GetUserGroup().."]"
+		end
+		return { ply:GetUserGroupTbl():GetColor(), prefix, team.GetColor( ply:Team() ), ply:Name() }
+	end
+end
+
 function PAdmin:FormatPlayerTable( tbl )
 	res = {}
-	-- check if its everyone.
 	if( #tbl == #player.GetAll())then
-		return {PAdmin.colors.cyan, "Everyone"}
-	end
-	if( #tbl == 1 )then
-		table.insert( res, "player ")
+		table.insert( res, PAdmin.colors.yellow )
+		table.insert( res, "(EVERYONE)" )
 	else
-		table.insert( res, "players ")
-	end
-	for k,v in pairs( tbl )do
-		table.insert( res, v )
-		table.insert( res, ", " )
-	end
-	table.remove( res, #res )
-	if( #res == 1 )then
-		table.insert( res, " (1 Player)")
-	else
-		table.insert( res, string.format(" (%d Players)", #tbl ) )
+		for k,v in pairs( tbl )do
+			table.insert( res, PAdmin:FormatPlayerName( v ) )
+			table.insert( res, ", " )
+		end
+		table.remove( res, #res )
+		table.insert( res, Color( 255, 255, 255, 255 ) )
+		table.insert( res, " ("..#tbl.." Players)" )
 	end
 	return res
 end
@@ -198,5 +205,5 @@ function PAdmin:StringToBoolean( str )
 			return true
 		end
 	end
-		return false
+	return false
 end

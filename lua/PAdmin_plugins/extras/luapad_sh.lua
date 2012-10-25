@@ -148,7 +148,6 @@
  if(file.Exists("luapad/_server_globals.txt", "DATA")) then
 	RunString(file.Read("luapad/_server_globals.txt", "DATA"));
  else
-	include("server_globals.lua")
 	//RunString(file.Read("luapad/_cached_server_globals.txt", "DATA"));
  end
  

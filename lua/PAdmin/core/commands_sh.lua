@@ -10,6 +10,10 @@
 		Libraries may be used without credit if you REQUIRE that PAdmin is installed for the project to work. You may NOT copy library files.
 */
 
+// NOTE TO SELF: THIS ENTIRE SYSTEM SHOULD BE REWRITTEN
+-- reformat to allow multiple colors in autocomplete
+-- improve efficiency of result generation.
+
 local PAdmin = PAdmin
 local string = string
 local table = table
@@ -53,11 +57,13 @@ Command Parsing and Running
 =========================*/
 
 local function AutoComplete( str )
+	print("Autocomplete ing.")
 	local result = {}
-	local tocans = PAdmin:ParseCommandString( string.Explode( ' ', string.sub( str, 2 ) ) )
+	local tocans = PAdmin:ParseCommandString( string.sub( str, 2 ) )
 	local cmd = nil
 	local help = {}
 	if( not tocans[1] )then
+		ErrorNoHalt("Tocans[1] is nil.")
 		return result
 	end
 	if( #tocans == 1)then

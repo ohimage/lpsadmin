@@ -21,44 +21,20 @@ if(SERVER)then
 		return nil
 	end
 	
-	hook.Add("PlayerInitialSpawn","PAdmin.BanCheck",function(ply)
-		-- first thing lets check if they're banned.
-		local banned = PAdmin:PlayerIsBanned( ply )
-		if( banned )then
-			PAdmin:LoadMsg("Found user "..ply:Name().." is banned. Applying ban.")
-			ply:Kick("Banned for "..(banned[1].reason or "Banned by Admin."))
-			return
-		end
+	hook.Add("PlayerInitialSpawn","PAdmin.PlayerInitalise",function(ply)
+		PAdmin:LoadMsgLN()
+		PAdmin:LoadMsg("Loading user "..ply:Nick()..".")
+		PAdmin:LoadMsgLN()
 		-- next we set some default values.
 		ply:SetNWInt( "GroupID", 1 )
 		ply:SetNWString( "UserGroup", "user" )
-		
+		hook.Call("PAdmin_PreLoadPlayerData",GAMEMODE,ply)
+		PAdmin:LoadUser( ply ) -- defined in data_sh.lua loads from sqlite account.
 		hook.Call("PAdmin_LoadPlayerData",GAMEMODE,ply)
-		hook.Call("PAdmin_PlayerLoaded",GAMEMODE, ply)
 		hook.Call("PAdmin_PostPlayerLoaded",GAMEMODE, ply)
 	end)
 	
 	hook.Add("PlayerAuthed","PAdmin.Auth",function( ply, steamid, uniqueid )
-		if( ply )then
-			local banned = PAdmin:PlayerIsBanned( ply )
-			if( banned )then
-				PAdmin:LoadMsg("Found user "..ply:Name().." is banned. Applying ban.")
-				ply:Kick("Banned for "..(banned[1].reason or "Banned by Admin."))
-			end
-			ply.PAdmin_Authed = { ply:SteamID(), ply:UniqueID() }
-			if( string.len( ply:Name() ) >= 2 )then
-				if( ply.PAdmin_Authed[ 1 ] == ply:SteamID() and ply.PAdmin_Authed[ 2 ] == ply:UniqueID() )then
-					PAdmin:LoadMsgLN()
-					PAdmin:LoadMsg(string.format("Player %s is authed by PAdmin.", ply:Name()))
-					 -- this is called once user is ready for data and stuff.
-					
-					ply.PAdmin_Authed = true
-				end
-			end
-			PAdmin:LoadUser( ply )
-		else
-			ply:Kick("Failed to auth user.")
-		end
 	end)
 	
 	hook.Add("PlayerConnect","PAdmin.PlayerJoin",function( name, addr )
@@ -67,18 +43,6 @@ if(SERVER)then
 end
 
 local PlyMeta = FindMetaTable( "Player" )
-function PlyMeta:IsAuthed() -- check if the player is authed.
-	if( CLIENT or self.PAdmin_Authed )then
-		return true
-	else
-		return false
-	end
-end
--- returns the player's user group meta table.
-function PlyMeta:GetUserGroupTbl()
-	if( not self )then return nil end
-	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
-end
 
 function PlyMeta:HasPermission( perm )
 	local t = self:GetUserGroupTbl()
@@ -103,15 +67,22 @@ function PAdmin:BanPlayer( ply, time, reason, admin)
 	local target = nil
 	if( type( ply ) == "Player" )then
 		target = ply:SteamID()
-	else
-		target = tonumber( ply )
 	end
 	if( not reason )then reason = "<none>" end
 	print("Called save ban info.")
 	PAdmin:SaveBanInfo( target, admin:Name(), os.time() + time * 60, reason )
 	for k,v in pairs(player.GetAll())do
-		if( v:SteamID() == ply:SteamID() )then
+		if( v:SteamID() == target )then
 			v:Kick("Banned "..reason..".")
 		end
+	end
+	
+end
+
+player.IsConsole = function( ply )
+	if( ply:IsValid() and ply:EntIndex() ~= 0 )then
+		return false
+	else
+		return true
 	end
 end

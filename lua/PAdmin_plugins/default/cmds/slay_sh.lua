@@ -21,6 +21,6 @@ tbl.run = function( ply, name, mode )
 		end
 		v:Kill()
 	end
-	PAdmin:Notice( player.GetAll(), PAdmin.colors.neutral, ply, " slayed ", unpack( PAdmin:FormatPlayerTable( res ) ) )
+	PAdmin:Notice( player.GetAll(), ply, " slayed ", unpack( PAdmin:FormatPlayerTable( res ) ) )
 end
 PAdmin:RegisterCommand( "slay" , tbl )

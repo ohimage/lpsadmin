@@ -98,19 +98,6 @@ if( SERVER )then
 		sql.Query( string.format( "UPDATE PAdmin_Users SET groupid=%s WHERE uniqueid = %s", sql.SQLStr( ply:GetNWInt("GroupID") ), sql.SQLStr( ply:UniqueID() )))
 	end
 	
-	-- this starts the data load.
-	hook.Add("PAdmin_PlayerAuthed","PAdminLoadData",function( ply )
-		PAdmin:LoadMsgLN()
-		PAdmin:LoadMsg("PAdmin Loading User data for "..ply:Nick() )
-		PAdmin:LoadUser( ply )
-		PAdmin:LoadMsgLN()
-		
-		PAdmin:LoadMsg("Beginning Group sync.")
-		for k,v in pairs( PAdmin:GetAllGroups() )do
-			PAdmin:SendGroupData( v, ply )
-		end
-	end)
-	
 	-- registers a ban in the table. This is NOT the same as banning a user. It just makes the mod think
 	-- that the player is banned.
 	-- unban date is a time in minutes
@@ -143,7 +130,7 @@ if( SERVER )then
 			PAdmin:LoadMsg("Removing expired bans")
 			for k,v in pairs( res )do
 				PAdmin:LoadMsg( string.format("Removing ban filter on %s uid %s", v[ "name" ], v[ "steamid" ] ) )
-				game.ConsoleCommand("removeid "..tostring( v[ "steamid" ] ) )
+				game.ConsoleCommand("removeid "..tostring( v[ "steamid" ] ).."\n" )
 			end
 			PAdmin:LoadMsg("Purging expired ban records.")
 			sql.Query( "DELETE FROM PAdmin_Bans WHERE UnbanDate != '0' AND UnbanDate <= "..sql.SQLStr( math.Round( os.time() ) ) )

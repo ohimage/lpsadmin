@@ -35,8 +35,8 @@ local function shInclude( path )
 end
 
 if(CLIENT)then
-	concommand.Add("padmin_reload",function( ply )
-		if( ply:IsSuperAdmin() )then
+	concommand.Add("PAdmin_Reload",function( ply )
+		if( LocalPlayer():IsSuperAdmin() )then
 			print("PAdmin: Reloading...")
 			net.Start( "PAdmin_ReloadSV" )
 			net.SendToServer( player.GetAll() )
@@ -50,6 +50,13 @@ else
 	local function reload( cl )
 		if(cl:IsSuperAdmin() or cl:IsListenServerHost())then
 			include("autorun/padmin.lua")
+			timer.Simple( 1, function()
+				for k,v in pairs(player.GetAll())do
+					hook.Call("PlayerSpawn",GM, v)
+					hook.Call("PlayerInitialSpawn",GM, v)
+					hook.Call("PlayerAuthed",GM, v, v:SteamID(), v:UniqueID())
+				end
+			end)
 		else
 			cl:Kick("PAdmin: Attempting to hack reload system.")
 		end
@@ -85,13 +92,6 @@ function PAdmin:LoadMsgLN( )
 	end
 end
 
-timer.Simple( 1, function()
-	for k,v in pairs(player.GetAll())do
-		hook.Call("PlayerSpawn",GM, v)
-		hook.Call("PlayerInitialSpawn",GM, v)
-		hook.Call("PlayerAuthed",GM, v, v:SteamID(), v:UniqueID())
-	end
-end)
 PAdmin:LoadMsgLN()
 MsgC(colText, [[
  ______  __                                       
@@ -127,6 +127,9 @@ shInclude("lib/player_sh.lua") -- genaric stuff library.
 shInclude("lib/data_sh.lua") -- data library.
 shInclude("lib/string_sh.lua") -- string library.
 shInclude("lib/genaric_sh.lua") -- genaric stuff library.
+if( not glon )then
+	shInclude( "lib/glon.lua" )
+end
 
 -- Inbetween stuff:
 shInclude( "core/permissions_sh.lua" )
