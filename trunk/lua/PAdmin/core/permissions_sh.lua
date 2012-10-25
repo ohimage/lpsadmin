@@ -125,13 +125,30 @@ PAdmin.Group = Group
 function PAdmin:GetGroupByID( id )
 	if( not groups[ id ] )then
 		local noGroup = Group:New( 0 ) -- this is the group returned if there is none, so it will never be null.
+		-- preferably this case should be avoided at all costs as it is processing intensive.
 		noGroup:SetTitle( "none" )
 		noGroup:SetColor( Color( 255, 255, 255, 255 ) )
 		noGroup:SetImmunity( 0 )
+		noGroup.IsNull = true -- identify this group as a null group. changes arnt valid.
 		return noGroup
 	else
 		return groups[ id ]
 	end
+end
+
+local titleIndexing = {}
+function PAdmin:GetGroupByTitle( title )
+	if( not titleIndexing[ title ] )then
+		for k,v in pairs( groups )do
+			if( v:GetTitle() == title )then
+				titleIndexing[ title ] = v:GetID()
+				return v
+			end
+		end
+	else
+		return groups[ titleIndexing[ title ] ]
+	end
+	return nil
 end
 
 -- loading groups.
@@ -210,8 +227,15 @@ function ply:SetUserGroup( val )
 	--ErrorNoHalt("SetUserGroup invalid group specified!")
 end
 
-function ply:GetUserGroup( val )
-	return PAdmin:GetGroupByID( self:GetNWInt("GroupID" ) ):GetTitle()
+-- returns the player's user group meta table.
+function ply:GetUserGroupTbl()
+	if( not self )then return nil end
+	return PAdmin:GetGroupByID( self:GetNWInt("GroupID", 1) )
+end
+
+
+function ply:GetUserGroup( )
+	return self:GetUserGroupTbl():GetTitle()
 end
 
 -- synching permissions tables.
@@ -229,6 +253,12 @@ if(SERVER)then
 			net.Broadcast()
 		end
 	end
+	hook.Add("PAdmin_PostPlayerLoaded","SendGroups",function( ply )
+		PAdmin:LoadMsg("Sending player group tables.")
+		for k,v in pairs( groups )do
+			PAdmin:SendGroupData( v, ply )
+		end
+	end)
 	function PAdmin:SendGroupData( grouptbl, target )
 		net.Start( "PAdmin.SendGroup" )
 			net.WriteTable( grouptbl:ToTable() )

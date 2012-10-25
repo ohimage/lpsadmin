@@ -19,13 +19,14 @@ colors["white"] = Color( 255, 255, 255, 255 )
 colors["red"] = Color( 255, 127, 127, 255 )
 colors["green"] = Color( 63, 127, 0, 255 )
 colors["blue"] = Color( 127, 129, 255, 255)
-colors["yellow"] = Color( 255, 223, 127, 255 )
+colors["yellow"] = Color( 255, 223, 70, 255 )
 
 colors["player"] = Color( 127, 129, 255, 255)
 colors["neutral"] = Color( 255, 255, 255, 255 )
 colors["error"] = colors["red"]
 colors["warning"] = colors["yellow"]
 colors["good"] = colors["green"]
+colors["console"] = Color(0, 0, 0, 255 )
 
 local schemes = {}
 function PAdmin:AddScheme( name, tbl )

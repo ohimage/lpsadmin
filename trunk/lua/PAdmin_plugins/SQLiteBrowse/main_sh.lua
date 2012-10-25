@@ -41,8 +41,7 @@ if(SERVER)then -- this command shouldnt be runby clients so we keep it on the se
 			end
 		end)
 
-	cmd_viewtbl.run = function( ply, args )
-		local name = args[1]
+	cmd_viewtbl.run = function( ply, name )
 		if( string.match( name, "[a-zA-Z_.]*") == name)then			
 			local dbvals = sql.Query( "SELECT * FROM "..name )
 			if( not dbvals )then
