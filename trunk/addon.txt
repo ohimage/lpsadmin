@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"LPSAdmin"
+	"version"			"3.0.0"
+	"up_date"			"00/00/00"
+	"author_name"			"TheLastPenguin"
+	"author_email"			"thelastpenguin212@gmail.com"
+	"author_url"			"http://lastpenguin.com/"
+	"info"				"Gmod Admin Mod"
+	"override"			"0"
+}
